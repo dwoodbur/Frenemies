@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+        <title>Do Not Go Gentle Prototype by Dylan Woodbury</title>
+        
+        <script defer src="main.js"></script>
+        
+        <script src="Game.js"></script>
+        <script src="BottomGame.js"></script>
+        <script src="LeftGame.js"></script>
+        <script src="RightGame.js"></script>
+        
+        <script src="VertStarEffect.js"></script>
+        
+        <script src="Player.js"></script>
+        <script src="Room.js"></script>
+        <script src="Portal.js"></script>
+        <script src="Character.js"></script>
+        <script src="Enemy.js"></script>
+        <script src="Death.js"></script>
+        <script src="Tree.js"></script>
+        <script src="Bush.js"></script>
+        <script src="SpeechBubble.js"></script>
+        <script src="Tablet.js"></script>
+        <script src="Sword.js"></script>
+        
+        <script src="Clock.js"></script>
+        <script src="ColorLuminance.js"></script>
+        
+        <script src="Dot.js"></script>
+        
+        <script src="KeyListener.js"></script>
+      	
+        <link rel="stylesheet" href="style.css" />
+        
+        <script>
+        window.addEventListener("keydown", function(e) {
+    	// space and arrow keys
+    	if([9].indexOf(e.keyCode) > -1) {
+    	    e.preventDefault();
+    		}
+		}, false);
+		</script>
+        
+    
+    </head>
+    
+    <body>
+    	<div id="canvas_wrap">
+    		<div id="canvas_top_row">
+    			<canvas id="left_canvas" width="150" height="540"></canvas>
+        		<canvas id="main_canvas" width="860" height="540"></canvas>
+    			<canvas id="right_canvas" width="150" height="540"></canvas>
+    		</div>
+    		<canvas id="bottom_canvas" width="1168" height="100"></canvas>
+    	</div>
+    </body>
+    
+</html>

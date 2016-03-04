@@ -1,0 +1,32 @@
+/*
+ *  Project Name - "Prototype"
+ *  by Dylan Woodbury
+ * 
+ *  
+ */
+/*canvas {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 960px;
+}*/
+
+#canvas_wrap {
+	width: 1268px;
+	margin: 0 auto;
+	margin-top: 60px;
+}
+
+html {
+	background-color: black;
+}
+
+#title {
+	color: white;
+	left: 50%;
+	position: absolute;
+	margin-left: -150px;
+	top: -5px;
+}
