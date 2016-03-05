@@ -39,24 +39,9 @@ function Game() {
 		UP: 38,
 		RIGHT: 39,
 		DOWN: 40,
-		ZERO: 48,
-		ONE: 49,
-		TWO: 50,
-		THREE: 51,
-		FOUR: 52,
-		FIVE: 53,
-		SIX: 54,
 		A: 65,
 		D: 68,
-		E: 69,
-		I: 73,
-		K: 75,
-		L: 76,
-		O: 79,
-		P: 80,
-		Q: 81,
 		S: 83,
-		U: 85,
 		W: 87
 	};
 	tabFlag = false;
@@ -72,6 +57,8 @@ function Game() {
 	timeChanged = false;
 	time = 0;
 	
+	//NUM_NPCs = 2;
+	NPCs = [];
 	
 	/*----------------*/
 	/* INITIALIZATION */
@@ -84,6 +71,8 @@ function Game() {
 	// Create game objects.
 	generateObjects();
 	
+	generateNPCs();
+	
 	
 	/*-----------*/    // Loop: -Update()
 	/* GAME LOOP */	   //		-Draw()		(repeat)
@@ -93,19 +82,21 @@ function Game() {
 	// Updates game state.
 	this.update = function() {
   		// Move player, handle effects of movement.	
-		setPlayerSpeed();
-		handlePlayerInput();
+		//setPlayerSpeed();
+		handleCameraInput();
 		
-		handleCollisionDetection();
+		//handleCollisionDetection();
 			
 		// Update objects that need.
 		updateObjects();
+		
+		updateNPCs();
 			
 		// Update canvases that need.
 		updateOtherCanvases();
 			
 		// Check game over.
-		this.checkPlayerDeath();
+		//this.checkPlayerDeath();
 		
 	};
 	
@@ -136,12 +127,17 @@ function Game() {
 		portals = [];
 	}
 	
+	function generateNPCs() {
+		NPCs[0] = new NPC(450, 450);
+		NPCs[1] = new NPC(800, 450);
+	}
+	
 	function generateObjects() {
-		player = new Player(0, 0);
+		//player = new Player(0, 0);
 		room = new Room(0, 0, canvas.width*2, canvas.height*2);
 		death = new Death(300, 300);
 		room.center();
-		player.center();
+		//player.center();
 		generateTrees();
 		generateBushes();
 		generateCharacters();
@@ -225,35 +221,29 @@ function Game() {
 		else player.speed = player.regSpeed;
 	}
 	
-	function handlePlayerInput() {
+	function handleCameraInput() {
 		// Handle vertical movement.
 		if(keys.isPressed(keyCodes.DOWN))
-			player.moveDown();
+			room.moveDown();
 		if(keys.isPressed(keyCodes.UP))
-			player.moveUp();
+			room.moveUp();
 			
 		// Handle horizontal movement.
 		if(keys.isPressed(keyCodes.LEFT))
-			player.moveLeft();
+			room.moveLeft();
 		if(keys.isPressed(keyCodes.RIGHT))
-			player.moveRight();
+			room.moveRight();
 			
 		// Handle player actions.
-		if(keys.isPressed(keyCodes.SPACE) && !("SPACE" in keyBurns) && !player.swinging) {
+		/*if(keys.isPressed(keyCodes.SPACE) && !("SPACE" in keyBurns) && !player.swinging) {
 			keyBurns["SPACE"] = 20;
 			handleSpace();
 		}
 		if(!keys.isPressed(keyCodes.SPACE) && player.pumping) {
 			player.pumping = false;
 			player.pumpCount = 0;
-			//var tempEnemies = [];
-			//for(var i=0; i<enemies; i++) {
-			//	if(!enemies[i].pumped)
-			//		tempEnemies.push(enemies[i]);
-			//}
-			//enemies = tempEnemies;
 			
-		}
+		}*/
 			
 		if(keys.isPressed(keyCodes.TAB) && !("TAB" in keyBurns)) {
 			
@@ -261,73 +251,6 @@ function Game() {
 			keyBurns["TAB"] = 15;
 		}
 		
-		if(keys.isPressed(keyCodes.P)) {
-			shadowMult += .01;
-		}
-		else if(keys.isPressed(keyCodes.O)) {
-			shadowMult -= .01;
-		}
-		
-		if(keys.isPressed(keyCodes.I)) {
-			brightnessMult += .01;
-		}
-		else if(keys.isPressed(keyCodes.U)) {
-			brightnessMult -= .01;
-		}
-		
-		if(keys.isPressed(keyCodes.L) && brightnessMult > -.97) {
-			shadowMult += .025;
-			brightnessMult -= .01;
-			timeChanged = CLOCK_DURATION;
-		}
-		else if(keys.isPressed(keyCodes.K) && shadowMult > 0) {
-			shadowMult -= .025;
-			brightnessMult += .01;
-			timeChanged = CLOCK_DURATION;
-		}
-		
-		if(keys.isPressed(keyCodes.ONE) &&!("ONE" in keyBurns)) {
-			//triggerSideStarEffect(100, 100);
-			//keyBurns["ONE"] = 10;
-			player.stage = 0;
-			player.age = 0;
-			shadowMult = 0;
-			brightnessMult = -.17;
-		}
-		else if(keys.isPressed(keyCodes.TWO) && !("TWO" in keyBurns)) {
-			player.stage = 1;
-			player.age = 16;
-			shadowMult = player.age/100*2;
-			brightnessMult = -.17-(player.age/100*.8);
-		}
-		else if(keys.isPressed(keyCodes.THREE) && !("THREE" in keyBurns)) {
-			player.stage = 2;
-			player.age = 26;
-			shadowMult = player.age/100*2;
-			brightnessMult = -.17-(player.age/100*.8);
-		}
-		else if(keys.isPressed(keyCodes.FOUR) && !("FOUR" in keyBurns)) {
-			player.stage = 3;
-			player.age = 51;
-			shadowMult = player.age/100*2;
-			brightnessMult = -.17-(player.age/100*.8);
-		}
-		else if(keys.isPressed(keyCodes.FIVE) && !("FIVE" in keyBurns)) {
-			player.stage = 4;
-			player.age = 61;
-			shadowMult = player.age/100*2;
-			brightnessMult = -.17-(player.age/100*.8);
-		}
-		else if(keys.isPressed(keyCodes.SIX) && !("SIX" in keyBurns)) {
-			player.stage = 5;
-			player.age = 81;
-			shadowMult = player.age/100*2;
-			brightnessMult = -.17-(player.age/100*.8);
-		}
-		else if(keys.isPressed(keyCodes.ZERO) && !("ZERO" in keyBurns)) {
-			generateMoreEnemies(8);
-			keyBurns["ZERO"] = 10;
-		}
 			
 		// Tick key burnouts.
 		for(var i in keyBurns) {
@@ -385,10 +308,10 @@ function Game() {
 				tickTime(2);
 				if(leftGame.mode != "vert_star_effect")
 					triggerSideStarEffect(100,100);
-				player.updateAge();
+				//player.updateAge();
 			}
 		}
-		
+		/*
 		if(player.swinging) {
 			for(var i=0; i<enemies.length; i++) {
 				var enemy = enemies[i];
@@ -439,8 +362,8 @@ function Game() {
 						enemy.pumped = true;
 				} else enemy.pumped = false;
 			}
-		}
-		
+		}*/
+		/*
 		for(var i=0; i<portals.length; i++) {
 			if(pointIn({x: player.x, y: player.y}, portals[i]) ||
 					pointIn({x: player.x+player.w, y: player.y}, portals[i]) ||
@@ -470,7 +393,7 @@ function Game() {
 				untickTime(1);
 			}
 		}
-		
+		*/
 		
 		
 	}
@@ -518,10 +441,18 @@ function Game() {
 			enemies[i].update();
 		}
 		
-		player.update();
+		//player.update();
 		
 		if(timeChanged == CLOCK_DURATION) {
 			updateClock();
+		}
+	}
+	
+	function updateNPCs() {
+		for(var i=0; i<NPCs.length; i++) {
+			NPCs[i].update();
+			if(NPCs[i].timeUntilUpdate <= 0)
+				NPCs[i].execute();
 		}
 	}
 	
@@ -550,7 +481,7 @@ function Game() {
 			bottomCtx.clearRect(0,0,bottomCanvas.width, bottomCanvas.height);
 			
 		}
-	}
+	};
 	
 	/*----------------*/
 	/* DRAW FUNCTIONS */
@@ -583,8 +514,8 @@ function Game() {
 		// sub functions
 		function getObjectsToDraw() {
 			var objectList = [];
-			objectList.push(player);
-			objectList.push(death);
+			//objectList.push(player);
+			objectList = objectList.concat(NPCs);
 			objectList = objectList.concat(trees);
 			objectList = objectList.concat(bushes);
 			objectList = objectList.concat(characters);
@@ -618,8 +549,8 @@ function Game() {
 		ctx.fillText("Room", 5, 30);
 		ctx.fillText("(x,y): ("+room.x+","+room.y+")", 5, 40);
 			
-		ctx.fillText("Player", 5, 55);
-		ctx.fillText("(x,y): ("+player.x+","+player.y+")", 5, 65);
+		//ctx.fillText("Player", 5, 55);
+		//ctx.fillText("(x,y): ("+player.x+","+player.y+")", 5, 65);
 			
 		ctx.fillText("Mouse", 5, 80);
 		ctx.fillText("(x,y): ("+mouse.x+","+mouse.y+")", 5, 90);
@@ -708,16 +639,16 @@ function Game() {
    function tickTime(num) {
 		shadowMult += .025*num;
 		brightnessMult -= .01*num;
-		player.regSpeed -= .06*num;
-		player.diagSpeed = player.regSpeed*.707;
+		//player.regSpeed -= .06*num;
+		//player.diagSpeed = player.regSpeed*.707;
 		timeChanged = CLOCK_DURATION;
    }
    
    function untickTime(num) {
    		shadowMult -= .025*num;
 		brightnessMult += .01*num;
-		player.regSpeed += .06*num;
-		player.diagSpeed = player.regSpeed*.707;
+		//player.regSpeed += .06*num;
+		//player.diagSpeed = player.regSpeed*.707;
 		timeChanged = CLOCK_DURATION;
    }
     

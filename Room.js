@@ -11,14 +11,16 @@ function Room(x, y, w, h) {
 	this.h = h;
 	this.color = "#00FF00";
 	
+	this.camSpeed = 3;
+	
 	HIGHLIGHT_WIDTH = 60;
 	
 	this.draw = function() {
-		if(player.stage != 1) {
+		//if(player.stage != 1) {
 			ctx.fillStyle = ColorLuminance(this.color, brightnessMult);
 			ctx.fillRect(this.x, this.y, this.w, this.h);
-		}
-		else if(player.stage == 1) {
+		//}
+		/*else if(player.stage == 1) {
 			ctx.fillStyle = "orange";
 			ctx.fillRect(this.x, this.y, this.w, this.h);
 			ctx.fillStyle = "purple";
@@ -62,11 +64,25 @@ function Room(x, y, w, h) {
 			
 			ctx.beginPath();
 			
-		}
+		}*/
 	};
 	
 	this.center = function() {
 		this.x = (-1/2)*((this.w/2)-(canvas.width/2));
 		this.y = (-1/2)*((this.h/2)-(canvas.height/2));
 	};
+	
+	this.moveUp = function() {
+		this.y += this.camSpeed;
+	};
+	this.moveDown = function() {
+		this.y -= this.camSpeed;
+	};
+	this.moveLeft = function() {
+		this.x += this.camSpeed;
+	};
+	this.moveRight = function() {
+		this.x -= this.camSpeed;
+	};
+	
 }

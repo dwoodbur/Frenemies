@@ -4,9 +4,10 @@
  * 
  *  
  */
-function Sword(x,y) {
+function Sword(x,y,wielder) {
 	this.x = x;
 	this.y = y;
+	this.wielder = wielder;
 	
 	// Sword swing data
 	this.p2x=0;
@@ -20,7 +21,7 @@ function Sword(x,y) {
 			this.p2x += this.speed;
 			this.p2y = Math.sqrt(this.range*this.range-Math.pow(this.p2x, 2));
 			if(this.p2x >= this.range) {
-				player.swinging = false;
+				this.wielder.stopSwinging();
 				this.p2x = 0;
 				this.p2y = 0;
 			}
@@ -29,7 +30,7 @@ function Sword(x,y) {
 			this.p2x += this.speed;
 			this.p2y = -1*Math.sqrt(this.range*this.range-Math.pow(this.p2x, 2));
 			if(this.p2x >= this.range) {
-				player.swinging = false;
+				this.wielder.swinging = false;
 				this.p2x = 0;
 				this.p2y = 0;
 			}
@@ -38,7 +39,7 @@ function Sword(x,y) {
 			this.p2y += this.speed;
 			this.p2x = -1*Math.sqrt(this.range*this.range-Math.pow(this.p2y, 2));
 			if(this.p2y >= this.range) {
-				player.swinging = false;
+				this.wielder.swinging = false;
 				this.p2x = 0;
 				this.p2y = 0;
 			}
@@ -47,7 +48,7 @@ function Sword(x,y) {
 			this.p2y += this.speed;
 			this.p2x = Math.sqrt(this.range*this.range-Math.pow(this.p2y, 2));
 			if(this.p2y >= this.range) {
-				player.swinging = false;
+				this.wielder.swinging = false;
 				this.p2x = 0;
 				this.p2y = 0;
 			}
@@ -56,34 +57,34 @@ function Sword(x,y) {
 	
 	this.draw = function() {
 		ctx.fillStyle = "brown";
-		var CX = player.x+room.x;
-		var CY = player.y+room.y;
-		if(player.swinging) {
+		var CX = this.wielder.x+room.x;
+		var CY = this.wielder.y+room.y;
+		if(this.wielder.swinging) {
 			ctx.beginPath();
 			ctx.lineWidth = 4;
 			ctx.strokeStyle = "brown";
-			ctx.moveTo(CX+(player.w/2), CY+(player.h/2));
-			ctx.lineTo(CX+(player.w/2)+this.p2x, CY+(player.h/2)+this.p2y);
+			ctx.moveTo(CX+(this.wielder.w/2), CY+(this.wielder.h/2));
+			ctx.lineTo(CX+(this.wielder.w/2)+this.p2x, CY+(this.wielder.h/2)+this.p2y);
 			ctx.stroke();
 		}
 		else {
-			switch(player.dir) {
+			switch(this.wielder.dir) {
 				case "r":
-					ctx.fillRect(CX+(player.w/2)+5, CY-10, 5, 40);
+					ctx.fillRect(CX+(this.wielder.w/2)+5, CY-10, 5, 40);
 					ctx.fillStyle = ColorLuminance("#FFFFFF", -.2);
-					ctx.fillRect(CX+(player.w/2)+2, CY+30, 10, 10);
+					ctx.fillRect(CX+(this.wielder.w/2)+2, CY+30, 10, 10);
 					break;
 				case "l":
-					ctx.fillRect(CX+(player.w/2)-5, CY-10, 5, 40);
+					ctx.fillRect(CX+(this.wielder.w/2)-5, CY-10, 5, 40);
 					ctx.fillStyle = ColorLuminance("#FFFFFF", -.2);
-					ctx.fillRect(CX+(player.w/2)-8, CY+30, 10, 10);
+					ctx.fillRect(CX+(this.wielder.w/2)-8, CY+30, 10, 10);
 					break;
 				case "u":
 					break;
 				case "d":
-					ctx.fillRect(CX+(player.w/2), CY-10, 5, 40);
+					ctx.fillRect(CX+(this.wielder.w/2), CY-10, 5, 40);
 					ctx.fillStyle = ColorLuminance("#FFFFFF", -.2);
-					ctx.fillRect(CX+(player.w/2)-3, CY+30, 10, 10);
+					ctx.fillRect(CX+(this.wielder.w/2)-3, CY+30, 10, 10);
 					break;
 			
 			}

@@ -4,7 +4,7 @@
  * 
  *  
  */
-function Player(x, y) {
+function NPC(x, y) {
 	
 	this.x = x;
 	this.y = y;
@@ -18,18 +18,32 @@ function Player(x, y) {
 	this.stage = 0;
 	this.age = 0;
 	
-	this.sword = new Sword(this.x, this.y);
-	this.dir = "d";
+	this.sword = new Sword(this.x, this.y, this);
+	this.dir = "";
+	this.timeUntilUpdate = 0;
 	this.swinging = false;
 	this.pumping = false;
 	this.pumped = false;
 	this.pumpCount = 0;
+	
+	this.root;
+	
 	
 	/* DRAW */
 	
 	this.update = function() {
 		if(this.swinging) {
 			this.sword.update();
+		}
+		else {
+			if(this.dir == "d")
+				this.moveDown();
+			else if(this.dir == "u")
+				this.moveUp();
+			else if(this.dir == "l")
+				this.moveLeft();
+			else
+				this.moveRight();
 		}
 		if(this.pumping) {
 			if(Math.random()<.5)
@@ -85,31 +99,27 @@ function Player(x, y) {
 	
 	this.moveUp = function() {
 		this.y = Math.round(Math.max(this.y-this.speed, room.y));
-		if(player.y+room.y < canvas.height/3)
-			room.y = Math.round(Math.min(0, room.y+this.speed));
 		if(!keys.isPressed(keyCodes.SHIFT))
-			this.dir = "u"
+			this.dir = "u";
+		this.timeUntilUpdate -= this.speed;
 	};
 	this.moveDown = function() {
 		this.y = Math.round(Math.min(this.y+this.speed, room.h-this.h*2));
-		if(this.y+this.h+room.y > 2*canvas.height/3)
-			room.y = Math.round(Math.max(-1*(canvas.height-this.h), room.y-this.speed));
 		if(!keys.isPressed(keyCodes.SHIFT))
 			this.dir = "d";
+		this.timeUntilUpdate -= this.speed;
 	};
 	this.moveLeft = function() {
 		this.x = Math.round(Math.max(this.x-this.speed, room.x));
-		if(this.x+room.x < canvas.width/3)
-			room.x = Math.round(Math.min(0, room.x+this.speed));
 		if(!keys.isPressed(keyCodes.SHIFT))
 			this.dir = "l";
+		this.timeUntilUpdate -= this.speed;
 	};
 	this.moveRight = function() {
 		this.x = Math.round(Math.min(this.x+this.speed, room.w-this.w));
-		if(this.x+room.x+this.w > 2*canvas.width/3)
-			room.x = Math.round(Math.max(-1*(room.w-this.w), room.x-this.speed));
 		if(!keys.isPressed(keyCodes.SHIFT))
 			this.dir = "r";
+		this.timeUntilUpdate -= this.speed;
 	};
 	
 	this.center = function() {
@@ -124,12 +134,38 @@ function Player(x, y) {
 	this.swing = function() {
 		this.swinging = true;
 		this.sword.setSwing(this.dir);
-		
+		this.timeUntilUpdate = 1;
+	};
+	
+	this.stopSwinging = function() {
+		this.swinging = false;
+		this.timeUntilUpdate = 0;
 	}
 	
 	this.pump = function() {
 		this.pumping = true;
 		this.pumpCount = 0;
-	}
+	};
+		
+	this.moveFor = function(dist, dir) {
+		this.timeUntilUpdate = dist;
+		this.dir = dir;
+	};
+	
+	this.initTree = function() {
+		var MoveRandomAction = new Action(new MoveRandomDir(this));
+		var SwingSwordAction = new Action(new SwingSword(this));
+		
+		var NearEnemyCheck = new Check(new NearEnemy(this));
+		
+		var CheckForEnemySequence = new Sequence([NearEnemyCheck, SwingSwordAction]);
+		
+		this.root = new Selector([CheckForEnemySequence, MoveRandomAction]);
+	};
+	this.initTree();
+	
+	this.execute = function() {
+		this.root.execute();
+	};
 		
 }
