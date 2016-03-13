@@ -23,7 +23,7 @@ function SwingSword(NPC) {
 function NearEnemy(NPC) {
 	this.execute = function() {
 		for(var i=0; i<enemies.length; i++) {
-			if(Math.sqrt(Math.pow(enemies.x+(enemies.w/2) - NPC.x, 2) + Math.pow(enemies.y - NPC.y, 2)) < 100) {
+			if(Math.sqrt(Math.pow(enemies[i].x+(enemies[i].w/2) - NPC.x, 2) + Math.pow(enemies[i].y - NPC.y, 2)) < 100) {
 				console.log("There is an enemy!");
 				return true;
 			}
