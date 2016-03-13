@@ -85,7 +85,7 @@ function Game() {
 		//setPlayerSpeed();
 		handleCameraInput();
 		
-		//handleCollisionDetection();
+		handleCollisionDetection();
 			
 		// Update objects that need.
 		updateObjects();
@@ -301,54 +301,59 @@ function Game() {
 				
 		}*/
 		
-		// Player hits enemy.
-		for(var i in enemies) {
-			var enemy = enemies[i];
-			if(enemyCollide(enemy, player)) {
-				tickTime(2);
-				if(leftGame.mode != "vert_star_effect")
-					triggerSideStarEffect(100,100);
-				//player.updateAge();
+		// NPC hits enemy.
+		for(var i in NPCs) {
+			var NPC = NPCs[i];
+			for(var j in enemies) {
+				var enemy = enemies[j];
+				if(enemyCollide(enemy, NPC)) {
+					NPC.damage();
+				}
 			}
 		}
+		
+		for(var i in NPCs) {
+			var NPC = NPCs[i];
+			if(NPC.swinging) {
+				for(var j=0; j<enemies.length; j++) {
+					var enemy = enemies[j];
+					if(NPC.dir == "u") {
+						if(enemy.y+enemy.h < NPC.y+NPC.h &&
+								((enemy.x < NPC.x+NPC.w && enemy.x > NPC.x) || (enemy.x+enemy.w > NPC.x && enemy.x+enemy.w < NPC.x+NPC.w)) &&
+								NPC.y+NPC.h - (enemy.y+enemy.h) < NPC.sword.range) {
+							enemies.splice(j,1);
+						}
+					}
+					else if(NPC.dir == "d") {
+						if(enemy.y+enemy.h > NPC.y+NPC.h &&
+								((enemy.x < NPC.x+NPC.w && enemy.x > NPC.x) || (enemy.x+enemy.w > NPC.x && enemy.x+enemy.w < NPC.x+NPC.w)) &&
+								enemy.y+enemy.h - (NPC.y+NPC.h) < NPC.sword.range) {
+							enemies.splice(j,1);
+						}
+					}
+					else if(NPC.dir == "l") {
+						if(enemy.x+(enemy.w/2) < NPC.x+(NPC.w/2) &&
+								((enemy.y+enemy.h > NPC.y && enemy.y+enemy.h < NPC.y+NPC.h) || (enemy.y < NPC.y+NPC.h && enemy.y > NPC.y)) &&
+								NPC.x - enemy.x < NPC.sword.range) {
+							enemies.splice(j,1);
+						}
+					}
+					else if(NPC.dir == "r") {
+						if(enemy.x+(enemy.w/2) > NPC.x+(NPC.w/2) &&
+								((enemy.y+enemy.h > NPC.y && enemy.y+enemy.h < NPC.y+NPC.h) || (enemy.y < NPC.y+NPC.h && enemy.y > NPC.y)) &&
+								enemy.x-NPC.x < NPC.sword.range) {
+								enemies.splice(j,1);
+						}
+					}
+				}
+				if(enemies.length == 0) {
+					wave++;
+					generateEnemies();
+				}	
+			}
+		}
+		
 		/*
-		if(player.swinging) {
-			for(var i=0; i<enemies.length; i++) {
-				var enemy = enemies[i];
-				if(player.dir == "u") {
-					if(enemy.y+enemy.h < player.y+player.h &&
-							((enemy.x < player.x+player.w && enemy.x > player.x) || (enemy.x+enemy.w > player.x && enemy.x+enemy.w < player.x+player.w)) &&
-							player.y+player.h - (enemy.y+enemy.h) < player.sword.range) {
-						enemies.splice(i,1);
-					}
-				}
-				else if(player.dir == "d") {
-					if(enemy.y+enemy.h > player.y+player.h &&
-							((enemy.x < player.x+player.w && enemy.x > player.x) || (enemy.x+enemy.w > player.x && enemy.x+enemy.w < player.x+player.w)) &&
-							enemy.y+enemy.h - (player.y+player.h) < player.sword.range) {
-						enemies.splice(i,1);
-					}
-				}
-				else if(player.dir == "l") {
-					if(enemy.x+(enemy.w/2) < player.x+(player.w/2) &&
-							((enemy.y+enemy.h > player.y && enemy.y+enemy.h < player.y+player.h) || (enemy.y < player.y+player.h && enemy.y > player.y)) &&
-							player.x - enemy.x < player.sword.range) {
-						enemies.splice(i,1);
-					}
-				}
-				else if(player.dir = "r") {
-					if(enemy.x+(enemy.w/2) > player.x+(player.w/2) &&
-							((enemy.y+enemy.h > player.y && enemy.y+enemy.h < player.y+player.h) || (enemy.y < player.y+player.h && enemy.y > player.y)) &&
-							enemy.x-player.x < player.sword.range) {
-						enemies.splice(i,1);
-					}
-				}
-			}
-			if(enemies.length == 0) {
-				wave++;
-				generateEnemies();
-			}
-		}
 		else if(player.pumped) {
 			var focus = {x: player.x+player.w/2,
 						 y: player.y+player.h};
@@ -379,13 +384,20 @@ function Game() {
 				generateTrees();
 			}
 		}
-		
+		*/
 		for(var i=0; i<enemies.length; i++) {
 			var enemy = enemies[i];
-			if(distTo({x: enemy.x+enemy.w/2, y: enemy.y+enemy.h/2}, {x: player.x+player.w/2, y: player.y+player.h/2}) < 110)
-				enemy.alert();
+			if(enemy.mode != "alert") {
+				for(var j=0; j<NPCs.length; j++) {
+					var NPC = NPCs[j];
+					if(distTo({x: enemy.x+enemy.w/2, y: enemy.y+enemy.h/2}, {x: NPC.x+NPC.w/2, y: NPC.y+NPC.h/2}) < 110) {
+						enemy.alert(NPC);
+						break;
+					}
+				}
+			}
 		}
-		
+		/*
 		for(var i=0; i<tablets.length; i++) {
 			var tab = tablets[i];
 			if(collide(player, tab)) {
@@ -419,11 +431,11 @@ function Game() {
 		}
 		
 		
-		function enemyCollide(enemy, player) {
-			if((enemy.x+enemy.w > player.x && enemy.x+enemy.w < player.x+player.w) ||
-				(enemy.x < player.x+player.w && enemy.x > player.x) ||
-				(enemy.x+(enemy.w/2) < player.x+player.w && enemy.x+(enemy.w/2) > player.x)) {
-				if(enemy.y >= player.y+22 && enemy.y < player.y+player.h-10) {
+		function enemyCollide(enemy, agent) {
+			if((enemy.x+enemy.w > agent.x && enemy.x+enemy.w < agent.x+agent.w) ||
+				(enemy.x < agent.x+agent.w && enemy.x > agent.x) ||
+				(enemy.x+(enemy.w/2) < agent.x+agent.w && enemy.x+(enemy.w/2) > agent.x)) {
+				if(enemy.y >= agent.y+22 && enemy.y < agent.y+agent.h-10) {
 					return true;
 				}
 			}

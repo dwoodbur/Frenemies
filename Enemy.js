@@ -17,6 +17,7 @@ function Enemy(x,y) {
 	this.mode = "wander";
 	this.direction = "";
 	this.directionCount = 0;
+	this.targetNPC = null;
 	
 	this.pumped = false;
 	
@@ -27,7 +28,7 @@ function Enemy(x,y) {
 					this.wander();
 					break;
 				case "alert":
-					this.alert();
+					this.alertUpdate();
 					break;
 			}
 		}
@@ -36,14 +37,19 @@ function Enemy(x,y) {
 		}
 	};
 	
-	this.alert = function() {
+	this.alert = function(NPC) {
 		this.mode = "alert";
 		this.color = "black";
+		this.targetNPC = NPC;
+	};
+	
+	this.alertUpdate = function() {
 		if(this.directionCount == 0) {
 			this.directionCount = 20+Math.floor(Math.random()*20);
 			
-			var px = player.x+player.w/2;
-			var py = player.y+player.h/2;
+			var NPC = this.targetNPC;
+			var px = NPC.x+NPC.w/2;
+			var py = NPC.y+NPC.h/2;
 			var ex = this.x+this.w/2;
 			var ey = this.y+this.h/2;
 			

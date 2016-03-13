@@ -181,5 +181,9 @@ function NPC(x, y) {
 	this.execute = function() {
 		this.root.execute();
 	};
+	
+	this.damage = function() {
+		this.color = "#FF0000";
+	};
 		
 }
