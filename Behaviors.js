@@ -31,3 +31,16 @@ function NearEnemy(NPC) {
 		return false;
 	}
 }
+
+// Betrayal stuff
+
+function ShouldBetray(NPC){
+	this.execute = function(){
+		// Calculate how much the NPC needs to betray someone
+		var necessity = 1 - NPC.health/NPC.maxHealth;
+		// Calculate confidence for successfully betraying each NPC
+		for(var i=0; i<NPCs.length;i++){
+			var confi
+		}
+	}
+}
