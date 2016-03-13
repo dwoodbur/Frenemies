@@ -27,6 +27,7 @@ function NPC(x, y) {
 	this.pumpCount = 0;
 	
 	this.root;
+	this.target = null;
 	
 	
 	/* DRAW */
@@ -161,12 +162,12 @@ function NPC(x, y) {
 		var CheckForEnemySequence = new Sequence([NearEnemyCheck, SwingSwordAction]);
 		
 		// Betrayal tree
-		/*
+		
 		var BetrayalCheck = new Check(new ShouldBetray(this));
 		var BetrayalAction = new Action(new Betray(this));
 		
 		var BetrayalBranch = new Sequence([BetrayalCheck,BetrayalBranch]);
-		*/
+		
 		this.root = new Selector([CheckForEnemySequence, MoveRandomAction]);
 	};
 	this.initTree();

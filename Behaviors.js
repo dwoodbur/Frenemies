@@ -37,10 +37,33 @@ function NearEnemy(NPC) {
 function ShouldBetray(NPC){
 	this.execute = function(){
 		// Calculate how much the NPC needs to betray someone
-		var necessity = 1 - NPC.health/NPC.maxHealth;
+		var necessity = 2*(1 - NPC.health/NPC.maxHealth) - 1;
+		if(necessity < NPC.selfishness) 
+			return false;
 		// Calculate confidence for successfully betraying each NPC
+		var bestTargetScore = -1;
+		var bestTargetIndex = -1;
 		for(var i=0; i<NPCs.length;i++){
-			var confi
+			if(NPCs[i]==NPC) continue;
+			/*placeholder confidence calc*/var confidence = NPC.health/NPCs[i].health;
+			if(confidence > bestTargetScore){
+				bestTargetScore = confidence;
+				bestTargetIndex = i;
+			}
 		}
-	}
+		if(bestTargetScore * NPC.selfishness > 1){
+			NPC.target = NPCs[bestTargetIndex];
+			return true;
+		}
+		return false;
+	};
 }
+
+function Betray(NPC){
+	this.execute = function(){
+		// Calculate how much the NPC needs to betray someone
+		NPC.attack(NPC.target);
+		return true;
+	};
+}
+
