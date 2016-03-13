@@ -127,6 +127,19 @@ function NPC(x, y) {
 		this.y = room.y+room.h/2-(this.h/2);
 	};
 	
+	this.turnUp = function() {
+		this.dir = "u";
+	};
+	this.turnDown = function() {
+		this.dir = "d";
+	};
+	this.turnLeft = function() {
+		this.dir = "l";
+	};
+	this.turnRight = function() {
+		this.dir = "r";
+	};
+	
 	this.updateAge = function() {
 		this.age = Math.floor(shadowMult/2*100);
 	};
@@ -157,8 +170,9 @@ function NPC(x, y) {
 		var SwingSwordAction = new Action(new SwingSword(this));
 		
 		var NearEnemyCheck = new Check(new NearEnemy(this));
+		var FaceEnemyAction = new Action(new TurnToNearestEnemy(this));
 		
-		var CheckForEnemySequence = new Sequence([NearEnemyCheck, SwingSwordAction]);
+		var CheckForEnemySequence = new Sequence([NearEnemyCheck, FaceEnemyAction, SwingSwordAction]);
 		
 		this.root = new Selector([CheckForEnemySequence, MoveRandomAction]);
 	};

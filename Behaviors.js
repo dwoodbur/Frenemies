@@ -31,3 +31,36 @@ function NearEnemy(NPC) {
 		return false;
 	}
 }
+
+function TurnToNearestEnemy(NPC) {
+	this.execute = function() {
+		var minDist = 999;
+		var nearestEnemy = null;
+		for(var i=0; i<enemies.length; i++) {
+			if(Math.sqrt(Math.pow(enemies[i].x+(enemies[i].w/2) - NPC.x, 2) + Math.pow(enemies[i].y - NPC.y, 2)) < minDist) {
+				nearestEnemy = enemies[i];
+			}
+		}
+		if(nearestEnemy != null) {
+			var dx=0;
+			var dy=0;
+			if(nearestEnemy.x > NPC.x)
+				dx = nearestEnemy.x - NPC.x;
+			else dx = NPC.x - nearestEnemy.x;
+			if(nearestEnemy.y > NPC.y)
+				dy = nearestEnemy.y - NPC.y;
+			else dy = NPC.y - nearestEnemy.y;
+			
+			var angle=Math.atan2(dy/dx);
+			if(angle < Math.PI/4 || angle > 3*Math.PI/2)
+				NPC.turnRight();
+			else if(angle < 3*Math.PI/4)
+				NPC.turnUp();
+			else if(angle < 5*Math.PI/4)
+				NPC.turnLeft();
+			else if(angle < 7*Math.PI/4)
+				NPC.turnDown();
+		}
+		return true;
+	};
+}
