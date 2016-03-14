@@ -20,11 +20,30 @@ function SwingSword(NPC) {
 	}
 }
 
+function Fight(NPC) {
+	this.execute = function() {
+		var minDist = 9999;
+		var nearestEnemy = null;
+		for(var i=0; i<enemies.length; i++) {
+			var dist = Math.sqrt(Math.pow(enemies[i].x+(enemies[i].w/2) - NPC.x, 2) + Math.pow(enemies[i].y - NPC.y, 2))
+			if(dist < minDist) {
+				nearestEnemy = enemies[i];
+				minDist = dist;
+			}
+		}
+		if(minDist <= 50) {
+			NPC.attack(nearestEnemy);
+			return true;
+		}
+		else return false;
+	}
+}
+
 function NearEnemy(NPC) {
 	this.execute = function() {
 		for(var i=0; i<enemies.length; i++) {
 			if(Math.sqrt(Math.pow(enemies[i].x+(enemies[i].w/2) - NPC.x, 2) + Math.pow(enemies[i].y - NPC.y, 2)) < 100) {
-				//console.log("There is an enemy!");
+				console.log("There is an enemy!");
 				return true;
 			}
 		}
@@ -40,6 +59,7 @@ function TurnToNearestEnemy(NPC) {
 		for(var i=0; i<enemies.length; i++) {
 			if(Math.sqrt(Math.pow(enemies[i].x+(enemies[i].w/2) - NPC.x, 2) + Math.pow(enemies[i].y - NPC.y, 2)) < minDist) {
 				nearestEnemy = enemies[i];
+				minDist = Math.sqrt(Math.pow(enemies[i].x+(enemies[i].w/2) - NPC.x, 2) + Math.pow(enemies[i].y - NPC.y, 2))
 			}
 		}
 		if(nearestEnemy != null) {
@@ -52,7 +72,7 @@ function TurnToNearestEnemy(NPC) {
 				dy = nearestEnemy.y - NPC.y;
 			else dy = NPC.y - nearestEnemy.y;
 			
-			var angle=Math.atan2(dy/dx);
+			var angle=Math.atan(dy/dx);
 			if(angle < Math.PI/4 || angle > 3*Math.PI/2)
 				NPC.turnRight();
 			else if(angle < 3*Math.PI/4)

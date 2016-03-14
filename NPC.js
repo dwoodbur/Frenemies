@@ -328,7 +328,10 @@ function NPC(x, y) {
 		var NearEnemyCheck = new Check(new NearEnemy(this));
 		var FaceEnemyAction = new Action(new TurnToNearestEnemy(this));
 		
-		var CheckForEnemySequence = new Sequence([NearEnemyCheck, FaceEnemyAction, SwingSwordAction]);
+		//var CheckForEnemySequence = new Sequence([NearEnemyCheck, FaceEnemyAction, SwingSwordAction]);
+		var FightAction = new Action(new Fight(this));
+		
+		var CheckForEnemySequence = new Sequence([FightAction]);
 		
 		// Betrayal tree
 		
@@ -337,7 +340,7 @@ function NPC(x, y) {
 		
 		var BetrayalBranch = new Sequence([BetrayalCheck,BetrayalAction]);
 		
-		this.root = new Selector([BetrayalBranch, MoveRandomAction]);
+		this.root = new Selector([CheckForEnemySequence, BetrayalBranch, MoveRandomAction]);
 	};
 	this.initTree();
 	
@@ -346,7 +349,7 @@ function NPC(x, y) {
 	};
 	
 	this.damage = function() {
-		this.hp-=20;
+		this.hp-=5;
 		if(this.healthBar != null)
 			this.healthBar.update();
 	};
