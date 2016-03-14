@@ -2,12 +2,12 @@ function MoveRandomDir(NPC) {
 	this.execute = function() {
 		var r = Math.random();
 		if(r<.25)
-			NPC.moveFor(25, "l");
+			NPC.moveTo({x: NPC.x-50, y: NPC.y});
 		else if(r<.5)
-			NPC.moveFor(25, "r");
+			NPC.moveTo({x: NPC.x+50, y: NPC.y});
 		else if(r < .75)
-			NPC.moveFor(25, "d");
-		else NPC.moveFor(25, "u");
+			NPC.moveTo({x: NPC.x, y: NPC.y-50});
+		else NPC.moveTo({x: NPC.x, y: NPC.y+50});
 		return true;
 	}
 }
@@ -73,7 +73,7 @@ function ShouldBetray(NPC){
 	this.execute = function(){
 		
 		// Calculate how much the NPC needs to betray someone
-		var necessity = 2*(1 - NPC.health/NPC.maxHealth) ;
+		var necessity = 2*(1 - NPC.hp/100) ;
 		if(necessity < NPC.selfishness) {
 			return false;
 		}
@@ -84,13 +84,13 @@ function ShouldBetray(NPC){
 		for(var i=0; i<NPCs.length;i++){
 			if(NPCs[i]==NPC) continue;
 			
-			var confidence = NPC.health/NPCs[i].health;
+			var confidence = NPC.hp/NPCs[i].hp;
 			if(confidence > bestTargetScore){
 				bestTargetScore = confidence;
 				bestTargetIndex = i;
 			}
 		}
-		if(true || bestTargetScore + NPC.selfishness > 0){
+		if(bestTargetScore + NPC.selfishness > 0){
 			NPC.target = NPCs[bestTargetIndex];
 			return true;
 		}
@@ -101,7 +101,10 @@ function ShouldBetray(NPC){
 function Betray(NPC){
 	this.execute = function(){
 		// Calculate how much the NPC needs to betray someone
-		NPC.attack(NPC.target);
+		if(NPC.target != null) {
+		if(NPC.target.hp >= 0)
+			NPC.attack(NPC.target);
+		}
 		return true;
 	};
 }
