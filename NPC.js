@@ -29,6 +29,17 @@ function NPC(x, y) {
 	this.healthBar = new HealthBar(this, this.x, this.y);
 	
 	this.root;
+	this.target = null;
+	
+	this.moving = false;
+	this.maxHealth = 100;
+	this.health = this.maxHealth;
+	this.inCombat = false;
+	
+	// Personality
+	this.selfishness = 0;
+	this.charisma = 0;
+	this.bravery = 0;
 	
 	this.speechBubble = null;
 	this.speechDur = 0;
@@ -45,10 +56,11 @@ function NPC(x, y) {
 	/* DRAW */
 	
 	this.update = function() {
+		
 		if(this.swinging) {
 			this.sword.update();
 		}
-		else {
+		else if(this.moving){
 			if(this.dir == "d")
 				this.moveDown();
 			else if(this.dir == "u")
@@ -57,6 +69,10 @@ function NPC(x, y) {
 				this.moveLeft();
 			else
 				this.moveRight();
+			this.timeUntilUpdate -= this.speed;
+		}
+		else{
+			this.timeUntilUpdate -= this.speed;
 		}
 		if(this.pumping) {
 			if(Math.random()<.5)
@@ -114,7 +130,14 @@ function NPC(x, y) {
 		this.healthBar.draw();
 	};
 	
-	
+	// Sets personality variables to a random value between -1...1
+	this.initPersonality = function(){
+		this.selfishness = 2*Math.random() - 1;
+		this.charisma = 2*Math.random() - 1;
+		this.bravery = 2*Math.random() - 1;
+		//this.color = "rgb("+this.selfishness+","+this.charisma+","+this.bravery+")";
+	};
+	this.initPersonality();
 	/* MOVEMENT */
 	
 	this.moveUp = function() {
@@ -127,7 +150,8 @@ function NPC(x, y) {
 			this.healthBar.y = Math.round(Math.max(this.y-this.speed, room.y));
 		if(this.cameraLock)
 			room.lockOn(this);
-		this.timeUntilUpdate -= this.speed;
+		//this.timeUntilUpdate -= this.speed;
+		//this.timeUntilUpdate -= this.speed;
 	};
 	this.moveDown = function() {
 		this.y = Math.round(Math.min(this.y+this.speed, room.h-this.h*2));
@@ -139,7 +163,8 @@ function NPC(x, y) {
 			this.healthBar.y = Math.round(Math.min(this.y+this.speed, room.h-this.h*2));
 		if(this.cameraLock)
 			room.lockOn(this);
-		this.timeUntilUpdate -= this.speed;
+		//this.timeUntilUpdate -= this.speed;
+		//this.timeUntilUpdate -= this.speed;
 	};
 	this.moveLeft = function() {
 		this.x = Math.round(Math.max(this.x-this.speed, room.x));
@@ -151,7 +176,8 @@ function NPC(x, y) {
 			this.healthBar.x = Math.round(Math.max(this.x-this.speed, room.x));
 		if(this.cameraLock)
 			room.lockOn(this);
-		this.timeUntilUpdate -= this.speed;
+		//this.timeUntilUpdate -= this.speed;
+		//this.timeUntilUpdate -= this.speed;
 	};
 	this.moveRight = function() {
 		this.x = Math.round(Math.min(this.x+this.speed, room.w-this.w));
@@ -163,7 +189,8 @@ function NPC(x, y) {
 			this.healthBar.x = Math.round(Math.min(this.x+this.speed, room.w-this.w));
 		if(this.cameraLock)
 			room.lockOn(this);
-		this.timeUntilUpdate -= this.speed;
+		//this.timeUntilUpdate -= this.speed;
+		//this.timeUntilUpdate -= this.speed;
 	};
 	
 	this.center = function() {
@@ -209,6 +236,91 @@ function NPC(x, y) {
 		this.dir = dir;
 	};
 	
+	this.moveTo = function(target){
+		this.target = target;
+		
+		if(this.target == null) {
+			console.log("MoveTarget is null!");
+			return;
+		}
+		this.moving = true;
+		if(this.x + 25 < target.x) 
+			this.moveFor(25,'r');
+		else if(this.x - 25 > target.x) 
+			this.moveFor(25,'l');
+		else if(this.y - 25 > target.y) 
+			this.moveFor(25,'u');
+		else if(this.y + 25 < target.y) 
+			this.moveFor(25,'d');
+		else
+			this.moving = false;
+	};
+	
+	this.attack = function(target){
+		// If close enough to target
+		if(Math.sqrt(Math.pow(target.x - this.x, 2) + Math.pow(target.y - this.y, 2)) < 70){
+			this.moving = false;
+			// If facing target, swing at it
+			if(this.isFacing(target)){
+				
+				this.swing();
+			}
+			// If not facing target, face it
+			else{
+				console.log("not facing");
+				this.faceTarget(target);
+			}
+		}
+		// Otherwise, move to target
+		else{
+			this.moveTo(target);
+		}
+	};
+	
+	this.isFacing = function(target){
+		var deltaX = this.x - target.x;  // +: we're to the right
+		var deltaY = this.y - target.y;  // +: we're below
+		if(this.dir == 'r'){
+			if(deltaX < 0 && Math.abs(deltaX) >= Math.abs(deltaY)) 
+				return true;
+			return false;
+		}
+		else if(this.dir == 'l'){
+			if(deltaX >= 0 && Math.abs(deltaX) >= Math.abs(deltaY)) 
+				return true;
+			return false;
+		}
+		else if(this.dir == 'u'){
+			if(deltaY > 0 && Math.abs(deltaY) >= Math.abs(deltaX)) 
+				return true;
+			return false;
+		}
+		else if(this.dir == 'd'){
+			if(deltaY <= 0 && Math.abs(deltaY) >= Math.abs(deltaX)) 
+				return true;
+			return false;
+		}
+		else 
+			return false;
+	};
+	
+	this.faceTarget = function(target){
+		var deltaX = this.x - target.x;  // +: we're to the right
+		var deltaY = this.y - target.y;  // +: we're below
+		if(Math.abs(deltaX) > Math.abs(deltaY)){
+			if(deltaX > 0)
+				this.dir = 'l';
+			else
+				this.dir = 'r';
+		}
+		else{
+			if(deltaY > 0)
+				this.dir = 'u';
+			else
+				this.dir = 'd';
+		}
+	};
+	
 	this.initTree = function() {
 		var MoveRandomAction = new Action(new MoveRandomDir(this));
 		var SwingSwordAction = new Action(new SwingSword(this));
@@ -218,7 +330,14 @@ function NPC(x, y) {
 		
 		var CheckForEnemySequence = new Sequence([NearEnemyCheck, FaceEnemyAction, SwingSwordAction]);
 		
-		this.root = new Selector([CheckForEnemySequence, MoveRandomAction]);
+		// Betrayal tree
+		
+		var BetrayalCheck = new Check(new ShouldBetray(this));
+		var BetrayalAction = new Action(new Betray(this));
+		
+		var BetrayalBranch = new Sequence([BetrayalCheck,BetrayalAction]);
+		
+		this.root = new Selector([BetrayalBranch, MoveRandomAction]);
 	};
 	this.initTree();
 	

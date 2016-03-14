@@ -32,6 +32,7 @@ function NearEnemy(NPC) {
 	}
 }
 
+
 function TurnToNearestEnemy(NPC) {
 	this.execute = function() {
 		var minDist = 999;
@@ -64,3 +65,44 @@ function TurnToNearestEnemy(NPC) {
 		return true;
 	};
 }
+
+
+// Betrayal stuff
+
+function ShouldBetray(NPC){
+	this.execute = function(){
+		
+		// Calculate how much the NPC needs to betray someone
+		var necessity = 2*(1 - NPC.health/NPC.maxHealth) ;
+		if(necessity < NPC.selfishness) {
+			return false;
+		}
+			
+		// Calculate confidence for successfully betraying each NPC
+		var bestTargetScore = -1;
+		var bestTargetIndex = -1;
+		for(var i=0; i<NPCs.length;i++){
+			if(NPCs[i]==NPC) continue;
+			
+			var confidence = NPC.health/NPCs[i].health;
+			if(confidence > bestTargetScore){
+				bestTargetScore = confidence;
+				bestTargetIndex = i;
+			}
+		}
+		if(true || bestTargetScore + NPC.selfishness > 0){
+			NPC.target = NPCs[bestTargetIndex];
+			return true;
+		}
+		return false;
+	};
+}
+
+function Betray(NPC){
+	this.execute = function(){
+		// Calculate how much the NPC needs to betray someone
+		NPC.attack(NPC.target);
+		return true;
+	};
+}
+
