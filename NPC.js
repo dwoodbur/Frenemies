@@ -90,10 +90,10 @@ function NPC(x, y) {
 		else if(this.dir == "l")
 			ctx.fillRect(room.x+this.x+this.w-5, room.y+this.y, 5, this.h);
 			
-		if(this.pumping && this.pumpCount != 1) {
+		/*if(this.pumping && this.pumpCount != 1) {
 			ctx.fillStyle = "red";
 			ctx.fillRect(room.x+this.x, room.y+this.y+(this.h*(1-this.pumpCount)), this.w, this.h*this.pumpCount);
-		}
+		}*/
 		
 		ctx.fillStyle = "black";
 		ctx.globalAlpha = .6;
