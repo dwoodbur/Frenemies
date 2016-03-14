@@ -1,5 +1,6 @@
 function MoveRandomDir(NPC) {
 	this.execute = function() {
+      NPC.moving = true;
 		var r = Math.random();
 		if(r<.25)
 			NPC.moveFor(25, "l");
