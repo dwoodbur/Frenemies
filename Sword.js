@@ -75,19 +75,19 @@ function Sword(x,y,wielder) {
 			switch(this.wielder.dir) {
 				case "r":
 					ctx.fillRect(CX+(this.wielder.w/2)+5, CY-10, 5, 40);
-					ctx.fillStyle = ColorLuminance("#FFFFFF", -.2);
+					ctx.fillStyle = this.wielder.color2;
 					ctx.fillRect(CX+(this.wielder.w/2)+2, CY+30, 10, 10);
 					break;
 				case "l":
 					ctx.fillRect(CX+(this.wielder.w/2)-5, CY-10, 5, 40);
-					ctx.fillStyle = ColorLuminance("#FFFFFF", -.2);
+					ctx.fillStyle = this.wielder.color2;
 					ctx.fillRect(CX+(this.wielder.w/2)-8, CY+30, 10, 10);
 					break;
 				case "u":
 					break;
 				case "d":
 					ctx.fillRect(CX+(this.wielder.w/2), CY-10, 5, 40);
-					ctx.fillStyle = ColorLuminance("#FFFFFF", -.2);
+					ctx.fillStyle = this.wielder.color2;
 					ctx.fillRect(CX+(this.wielder.w/2)-3, CY+30, 10, 10);
 					break;
 			

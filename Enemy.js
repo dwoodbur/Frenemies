@@ -64,6 +64,10 @@ function Enemy(x,y) {
 		this.y += this.alertDy;
 		
 		this.directionCount--;
+		if(this.targetNPC.hp <= 0) {
+			this.mode = "wander";
+			this.targetNPC = null;
+		}
 	};
 	
 	this.wander = function() {
