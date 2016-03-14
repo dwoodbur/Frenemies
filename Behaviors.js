@@ -39,7 +39,7 @@ function ShouldBetray(NPC){
 	this.execute = function(){
 		
 		// Calculate how much the NPC needs to betray someone
-		var necessity = 2*(1 - NPC.health/NPC.maxHealth) ;
+		var necessity = 2*(1 - NPC.health/NPC.maxHealth) -1 ;
 		if(necessity < NPC.selfishness) {
 			return false;
 		}
@@ -56,7 +56,7 @@ function ShouldBetray(NPC){
 				bestTargetIndex = i;
 			}
 		}
-		if(true || bestTargetScore + NPC.selfishness > 0){
+		if(bestTargetScore + NPC.selfishness > 0){
 			NPC.target = NPCs[bestTargetIndex];
 			return true;
 		}
