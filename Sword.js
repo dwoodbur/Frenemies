@@ -84,6 +84,7 @@ function Sword(x,y,wielder) {
 					ctx.fillRect(CX+(this.wielder.w/2)-8, CY+30, 10, 10);
 					break;
 				case "u":
+					ctx.fillRect(CX+(this.wielder.w/2)-5, CY-10, 5, 40);
 					break;
 				case "d":
 					ctx.fillRect(CX+(this.wielder.w/2), CY-10, 5, 40);

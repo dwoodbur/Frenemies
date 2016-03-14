@@ -73,8 +73,10 @@ function Room(x, y, w, h) {
 	};
 	
 	this.lockOn = function(object) {
-		this.x = (-1)*((object.x+object.w/2)) + canvas.width/2;
-		this.y = (-1)*(object.y+object.h/2) + canvas.height/2;
+		this.x = Math.max((-1)*((object.x+object.w/2)) + canvas.width/2, -this.w+canvas.width);
+		this.x = Math.min(this.x, 0);
+		this.y = Math.max((-1)*(object.y+object.h/2) + canvas.height/2, -this.h+canvas.height);
+		this.y = Math.min(this.y, 0);
 	};
 	
 	this.moveUp = function() {

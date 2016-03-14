@@ -227,7 +227,7 @@ function NPC(x, y) {
 	};
 	
 	this.damage = function() {
-		this.hp-=20;
+		this.hp-=5;
 		if(this.healthBar != null)
 			this.healthBar.update();
 	};

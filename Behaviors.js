@@ -51,14 +51,14 @@ function TurnToNearestEnemy(NPC) {
 				dy = nearestEnemy.y - NPC.y;
 			else dy = NPC.y - nearestEnemy.y;
 			
-			var angle=Math.atan2(dy/dx);
-			if(angle < Math.PI/4 || angle > 3*Math.PI/2)
-				NPC.turnRight();
-			else if(angle < 3*Math.PI/4)
-				NPC.turnUp();
-			else if(angle < 5*Math.PI/4)
+			var angle=Math.atan(dy/dx);
+			if(angle > 3*Math.PI/4 || angle < -3*Math.PI/4)
 				NPC.turnLeft();
-			else if(angle < 7*Math.PI/4)
+			else if(angle > Math.PI/4)
+				NPC.turnUp();
+			else if(angle > -Math.PI/4)
+				NPC.turnRight();
+			else if(angle > -3*Math.PI/4)
 				NPC.turnDown();
 		}
 		return true;
