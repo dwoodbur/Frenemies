@@ -129,7 +129,8 @@ function Game() {
 	
 	function generateNPCs() {
 		NPCs[0] = new NPC(450, 450);
-		NPCs[1] = new NPC(800, 450);
+		NPCs[1] = new NPC(800, 250);
+		NPCs[2] = new NPC(400, 350);
 	}
 	
 	function generateObjects() {
