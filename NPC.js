@@ -10,11 +10,10 @@ function NPC(x, y) {
 	this.y = y;
 	this.w = 28;
 	this.h = 50;
-	this.regSpeed = 8;
+	this.regSpeed = 4;
 	this.diagSpeed = this.regSpeed*.707;
 	this.speed = this.regSpeed;
 	this.tag = "player";
-	this.color = "#FFFFFF";
 	this.stage = 0;
 	this.age = 0;
 	
@@ -26,8 +25,22 @@ function NPC(x, y) {
 	this.pumped = false;
 	this.pumpCount = 0;
 	
+	this.hp = 100;
+	this.healthBar = new HealthBar(this, this.x, this.y);
+	
 	this.root;
 	
+	this.speechBubble = null;
+	this.speechDur = 0;
+	
+	this.cameraLock = false;
+	
+	var skinTones = ["#FAE7D0", "#DFC183","#AA724B","#C8ACA3","#E8CDA8","#7B4B2A","#FFCC99","#CEAB69","#935D37",
+		"#C0A183","#CAA661","#573719","#FEB186","#B98865","#7B4B2A","#C18E74","#B58A3F","#483728"];
+	this.color = skinTones[Math.floor(Math.random()*skinTones.length)];
+	this.color2 = ColorLuminance(this.color, -.3);
+	
+
 	
 	/* DRAW */
 	
@@ -57,16 +70,21 @@ function NPC(x, y) {
 			if(this.pumpCount == 1)
 				this.color = "#FFFFFF";
 		}
+		if(this.speechBubble != null) {
+			this.speechDur--;
+			if(this.speechDur <= 0)
+				this.speechBubble = null;
+		}
 	};
 	
 	this.draw = function() {
 		if(this.dir == "u")
 			this.sword.draw();
 		if(this.dir == "u")
-			ctx.fillStyle = ColorLuminance("#FFFFFF", -.1);
+			ctx.fillStyle = this.color2;
 		else ctx.fillStyle = this.color;
 		ctx.fillRect(room.x+this.x, room.y+this.y, this.w, this.h);
-		ctx.fillStyle = ColorLuminance("#FFFFFF", -.2);
+		ctx.fillStyle = this.color2;
 		if(this.dir == "r")
 			ctx.fillRect(room.x+this.x, room.y+this.y, 5, this.h);
 		else if(this.dir == "l")
@@ -92,6 +110,8 @@ function NPC(x, y) {
 		
 		if(this.dir != "u")
 			this.sword.draw();
+			
+		this.healthBar.draw();
 	};
 	
 	
@@ -101,24 +121,48 @@ function NPC(x, y) {
 		this.y = Math.round(Math.max(this.y-this.speed, room.y));
 		if(!keys.isPressed(keyCodes.SHIFT))
 			this.dir = "u";
+		if(this.speechBubble != null)
+			this.speechBubble.y = Math.round(Math.max(this.y-this.speed, room.y));
+		if(this.healthBar != null)
+			this.healthBar.y = Math.round(Math.max(this.y-this.speed, room.y));
+		if(this.cameraLock)
+			room.lockOn(this);
 		this.timeUntilUpdate -= this.speed;
 	};
 	this.moveDown = function() {
 		this.y = Math.round(Math.min(this.y+this.speed, room.h-this.h*2));
 		if(!keys.isPressed(keyCodes.SHIFT))
 			this.dir = "d";
+		if(this.speechBubble != null)
+			this.speechBubble.y = Math.round(Math.min(this.y+this.speed, room.h-this.h*2));
+		if(this.healthBar != null)
+			this.healthBar.y = Math.round(Math.min(this.y+this.speed, room.h-this.h*2));
+		if(this.cameraLock)
+			room.lockOn(this);
 		this.timeUntilUpdate -= this.speed;
 	};
 	this.moveLeft = function() {
 		this.x = Math.round(Math.max(this.x-this.speed, room.x));
 		if(!keys.isPressed(keyCodes.SHIFT))
 			this.dir = "l";
+		if(this.speechBubble != null)
+			this.speechBubble.x = Math.round(Math.max(this.x-this.speed, room.x));
+		if(this.healthBar != null)
+			this.healthBar.x = Math.round(Math.max(this.x-this.speed, room.x));
+		if(this.cameraLock)
+			room.lockOn(this);
 		this.timeUntilUpdate -= this.speed;
 	};
 	this.moveRight = function() {
 		this.x = Math.round(Math.min(this.x+this.speed, room.w-this.w));
 		if(!keys.isPressed(keyCodes.SHIFT))
 			this.dir = "r";
+		if(this.speechBubble != null)
+			this.speechBubble.x = Math.round(Math.min(this.x+this.speed, room.w-this.w));
+		if(this.healthBar != null)
+			this.healthBar.x = Math.round(Math.min(this.x+this.speed, room.w-this.w));
+		if(this.cameraLock)
+			room.lockOn(this);
 		this.timeUntilUpdate -= this.speed;
 	};
 	
@@ -183,7 +227,21 @@ function NPC(x, y) {
 	};
 	
 	this.damage = function() {
-		this.color = "#FF0000";
+		this.hp-=20;
+		if(this.healthBar != null)
+			this.healthBar.update();
+	};
+	
+	this.say = function(saying, duration) {
+		this.speechBubble = new SpeechBubble(this.x, this.y, saying);
+		this.speechDur = duration;
+	};
+	
+	this.lockOn = function() {
+		this.cameraLock = true;
 	};
 		
+	this.unlock = function() {
+		this.cameraLock = false;
+	};
 }

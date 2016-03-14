@@ -16,6 +16,8 @@ function Sword(x,y,wielder) {
 	this.dir = "";
 	this.speed = 10;
 	
+	this.color = "white";
+	
 	this.update = function() {
 		if(this.dir == "d") {
 			this.p2x += this.speed;
@@ -56,18 +58,20 @@ function Sword(x,y,wielder) {
 	};
 	
 	this.draw = function() {
-		ctx.fillStyle = "brown";
+		ctx.fillStyle = this.color;
 		var CX = this.wielder.x+room.x;
 		var CY = this.wielder.y+room.y;
 		if(this.wielder.swinging) {
 			ctx.beginPath();
-			ctx.lineWidth = 4;
-			ctx.strokeStyle = "brown";
+			ctx.lineWidth = 5;
+			ctx.strokeStyle = this.color;
 			ctx.moveTo(CX+(this.wielder.w/2), CY+(this.wielder.h/2));
 			ctx.lineTo(CX+(this.wielder.w/2)+this.p2x, CY+(this.wielder.h/2)+this.p2y);
 			ctx.stroke();
+			ctx.closePath();
 		}
 		else {
+			ctx.fillStyle = this.color;
 			switch(this.wielder.dir) {
 				case "r":
 					ctx.fillRect(CX+(this.wielder.w/2)+5, CY-10, 5, 40);

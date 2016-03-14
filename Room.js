@@ -72,6 +72,11 @@ function Room(x, y, w, h) {
 		this.y = (-1/2)*((this.h/2)-(canvas.height/2));
 	};
 	
+	this.lockOn = function(object) {
+		this.x = (-1)*((object.x+object.w/2)) + canvas.width/2;
+		this.y = (-1)*(object.y+object.h/2) + canvas.height/2;
+	};
+	
 	this.moveUp = function() {
 		this.y += this.camSpeed;
 	};

@@ -42,7 +42,12 @@ function Game() {
 		A: 65,
 		D: 68,
 		S: 83,
-		W: 87
+		W: 87,
+		ONE: 49,
+		TWO: 50,
+		THREE: 51,
+		FOUR: 52,
+		FIVE: 53
 	};
 	tabFlag = false;
 	
@@ -58,7 +63,9 @@ function Game() {
 	time = 0;
 	
 	//NUM_NPCs = 2;
-	NPCs = [];
+	
+	this.cameraMode = "camera";
+	this.cameraMode = "NPC";
 	
 	/*----------------*/
 	/* INITIALIZATION */
@@ -86,6 +93,8 @@ function Game() {
 		handleCameraInput();
 		
 		handleCollisionDetection();
+		
+		checkNPCDeath();
 			
 		// Update objects that need.
 		updateObjects();
@@ -97,6 +106,7 @@ function Game() {
 			
 		// Check game over.
 		//this.checkPlayerDeath();
+		
 		
 	};
 	
@@ -119,17 +129,22 @@ function Game() {
 	/*--------------------------*/
 	
 	function initializeContainers() {
-		characters = [];
+		NPCs = [];
 		enemies = [];
 		trees = [];
 		bushes = [];
-		tablets = [];
-		portals = [];
+		//tablets = [];
+		//portals = [];
 	}
 	
 	function generateNPCs() {
 		NPCs[0] = new NPC(450, 450);
-		NPCs[1] = new NPC(800, 450);
+		NPCs[1] = new NPC(650, 450);
+		NPCs[2] = new NPC(850, 450);
+		NPCs[3] = new NPC(450, 300);
+		NPCs[4] = new NPC(650, 300);
+		NPCs[5] = new NPC(850, 300);
+		
 	}
 	
 	function generateObjects() {
@@ -142,8 +157,8 @@ function Game() {
 		generateBushes();
 		generateCharacters();
 		generateEnemies();
-		generateTablets();
-		portals.push(new Portal(0, 360, 50, 100, new Room(0, 0, canvas.width, canvas.height)));
+		//generateTablets();
+		//portals.push(new Portal(0, 360, 50, 100, new Room(0, 0, canvas.width, canvas.height)));
 	}
 		// sub functions
 		function generateTrees() {
@@ -172,14 +187,14 @@ function Game() {
 			var ENEMY_HEIGHT = 30;
 			
 			if(wave == 0)
-				numEnemies = 5;
+				numEnemies = 60;
 			else if(wave == 1)
-				numEnemies = 8;
+				numEnemies = 80;
 			else if(wave == 2)
-				numEnemies = 12;
+				numEnemies = 100;
 			else if(wave == 3)
-				numEnemies = 15;
-			else numEnemies = 30;
+				numEnemies = 150;
+			else numEnemies = 200;
 
 			for(var i=0; i<numEnemies; i++)
 				enemies.push(new Enemy(Math.random()*(room.w-ENEMY_WIDTH),
@@ -222,17 +237,44 @@ function Game() {
 	}
 	
 	function handleCameraInput() {
-		// Handle vertical movement.
-		if(keys.isPressed(keyCodes.DOWN))
-			room.moveDown();
-		if(keys.isPressed(keyCodes.UP))
-			room.moveUp();
+		if(keys.isPressed(keyCodes.DOWN) || keys.isPressed(keyCodes.UP) || keys.isPressed(keyCodes.LEFT) || keys.isPressed(keyCodes.RIGHT)) {
+			if(this.cameraMode == "NPC") {
+				for(var i=0; i<NPCs.length; i++)
+					NPCs[i].cameraLock = false;
+			}
+			// Handle vertical movement.
+			if(keys.isPressed(keyCodes.DOWN))
+				room.moveDown();
+			if(keys.isPressed(keyCodes.UP))
+				room.moveUp();
+				
+			// Handle horizontal movement.
+			if(keys.isPressed(keyCodes.LEFT))
+				room.moveLeft();
+			if(keys.isPressed(keyCodes.RIGHT))
+				room.moveRight();
+		}
 			
-		// Handle horizontal movement.
-		if(keys.isPressed(keyCodes.LEFT))
-			room.moveLeft();
-		if(keys.isPressed(keyCodes.RIGHT))
-			room.moveRight();
+		if(keys.isPressed(keyCodes.ONE) || keys.isPressed(keyCodes.TWO) || keys.isPressed(keyCodes.THREE) || 
+			keys.isPressed(keyCodes.FOUR) || keys.isPressed(keyCodes.FIVE) || keys.isPressed(keyCodes.SIX)) {
+			if(this.cameraMode == "NPC") {
+				for(var i=0; i<NPCs.length; i++)
+					NPCs[i].cameraLock = false;
+			}
+			this.cameraMode = "NPC";
+			if(keys.isPressed(keyCodes.ONE) && NPCs.length >= 1)
+				NPCs[0].lockOn();
+			else if(keys.isPressed(keyCodes.TWO) && NPCs.length >= 2)
+				NPCs[1].lockOn();
+			else if(keys.isPressed(keyCodes.THREE) && NPCs.length >= 3)
+				NPCs[2].lockOn();
+			else if(keys.isPressed(keyCodes.FOUR) && NPCs.length >= 4)
+				NPCs[3].lockOn();
+			else if(keys.isPressed(keyCodes.FIVE) && NPCs.length >= 5)
+				NPCs[4].lockOn();
+			else if(keys.isPressed(keyCodes.SIX) && NPCs.length >= 6)
+				NPCs[5].lockOn();
+		}
 			
 		// Handle player actions.
 		/*if(keys.isPressed(keyCodes.SPACE) && !("SPACE" in keyBurns) && !player.swinging) {
@@ -271,20 +313,6 @@ function Game() {
 					player.pump();
 				}
 			}
-			
-			/*var minDist = 999999;
-			var minIndex = -1;
-			for(var i in characters) {
-				var character = characters[i];
-				var dist = Math.sqrt(Math.pow(player.x-character.x, 2)+Math.pow(player.y-character.y, 2));
-				if(dist < minDist) {
-					minDist = dist;
-					minIndex = i;
-				}
-			}
-			if(minIndex != -1 && minDist < 120) {
-				characters[minIndex].speak();
-			}*/
 		};
 		
 		switchTabFlag = function() {
@@ -294,14 +322,8 @@ function Game() {
 		}
 	
 	function handleCollisionDetection() {
-		// Player hits bush.
-		/*for(var i in bushes) {
-			var bush = bushes[i];
-			if(collide(player, bush))
-				
-		}*/
 		
-		// NPC hits enemy.
+		// Enemy hits NPC.
 		for(var i in NPCs) {
 			var NPC = NPCs[i];
 			for(var j in enemies) {
@@ -311,39 +333,44 @@ function Game() {
 				}
 			}
 		}
-		
+		// NPC hits enemy
 		for(var i in NPCs) {
 			var NPC = NPCs[i];
 			if(NPC.swinging) {
 				for(var j=0; j<enemies.length; j++) {
 					var enemy = enemies[j];
+					var enemyHit = null;
 					if(NPC.dir == "u") {
 						if(enemy.y+enemy.h < NPC.y+NPC.h &&
 								((enemy.x < NPC.x+NPC.w && enemy.x > NPC.x) || (enemy.x+enemy.w > NPC.x && enemy.x+enemy.w < NPC.x+NPC.w)) &&
 								NPC.y+NPC.h - (enemy.y+enemy.h) < NPC.sword.range) {
-							enemies.splice(j,1);
+							enemyHit = enemy;
 						}
 					}
 					else if(NPC.dir == "d") {
 						if(enemy.y+enemy.h > NPC.y+NPC.h &&
 								((enemy.x < NPC.x+NPC.w && enemy.x > NPC.x) || (enemy.x+enemy.w > NPC.x && enemy.x+enemy.w < NPC.x+NPC.w)) &&
 								enemy.y+enemy.h - (NPC.y+NPC.h) < NPC.sword.range) {
-							enemies.splice(j,1);
+							enemyHit = enemy;
 						}
 					}
 					else if(NPC.dir == "l") {
 						if(enemy.x+(enemy.w/2) < NPC.x+(NPC.w/2) &&
 								((enemy.y+enemy.h > NPC.y && enemy.y+enemy.h < NPC.y+NPC.h) || (enemy.y < NPC.y+NPC.h && enemy.y > NPC.y)) &&
 								NPC.x - enemy.x < NPC.sword.range) {
-							enemies.splice(j,1);
+							enemyHit = enemy;
 						}
 					}
 					else if(NPC.dir == "r") {
 						if(enemy.x+(enemy.w/2) > NPC.x+(NPC.w/2) &&
 								((enemy.y+enemy.h > NPC.y && enemy.y+enemy.h < NPC.y+NPC.h) || (enemy.y < NPC.y+NPC.h && enemy.y > NPC.y)) &&
 								enemy.x-NPC.x < NPC.sword.range) {
-								enemies.splice(j,1);
+							enemyHit = enemy;
 						}
+					}
+					if(enemyHit != null) {
+						enemies.splice(j,1);
+						NPC.say("Gotcha!", 100);
 					}
 				}
 				if(enemies.length == 0) {
@@ -352,39 +379,6 @@ function Game() {
 				}	
 			}
 		}
-		
-		/*
-		else if(player.pumped) {
-			var focus = {x: player.x+player.w/2,
-						 y: player.y+player.h};
-			var distTop = focus.y;
-			var distBottom = canvas.height-focus.y;
-			var distLeft = focus.x;
-			var distRight = canvas.width-focus.x;
-			for(var i=0; i<enemies.length; i++) {
-				var enemy = enemies[i];
-				if((enemy.y+enemy.h > focus.y-30 && enemy.y+enemy.h < focus.y+30 && Math.abs(enemy.x+enemy.w/2 - focus.x) < 300)) {
-						enemy.pumped = true;
-				} else enemy.pumped = false;
-			}
-		}*/
-		/*
-		for(var i=0; i<portals.length; i++) {
-			if(pointIn({x: player.x, y: player.y}, portals[i]) ||
-					pointIn({x: player.x+player.w, y: player.y}, portals[i]) ||
-					pointIn({x: player.x, y: player.y+player.h}, portals[i]) ||
-					pointIn({x: player.x+player.w, y: player.y+player.h}, portals[i])) {
-				room = portals[i].targRoom;
-				trees = [];
-				bushes = [];
-				enemies = [];
-				characters = [];
-				tablets = [];
-				portals = [];
-				generateTrees();
-			}
-		}
-		*/
 		for(var i=0; i<enemies.length; i++) {
 			var enemy = enemies[i];
 			if(enemy.mode != "alert") {
@@ -397,17 +391,7 @@ function Game() {
 				}
 			}
 		}
-		/*
-		for(var i=0; i<tablets.length; i++) {
-			var tab = tablets[i];
-			if(collide(player, tab)) {
-				tablets.splice(i,1);
-				untickTime(1);
-			}
-		}
-		*/
-		
-		
+				
 	}
 	
 		function distTo(pt1, pt2) {
@@ -443,12 +427,6 @@ function Game() {
 		}
 	
 	function updateObjects() {
-		for(var i=0; i<bushes.length; i++) {
-			bushes[i].update();
-		}
-		for(var i=0; i<characters.length; i++) {
-			characters[i].update();
-		}
 		for(var i=0; i<enemies.length; i++) {
 			enemies[i].update();
 		}
@@ -473,25 +451,19 @@ function Game() {
 	}
 	
 	function updateOtherCanvases() {
-		if(bottomGame.active)
-			bottomGame.update();
+		//if(bottomGame.active)
+			//bottomGame.update();
 		if(leftGame.active)
 			leftGame.update();
 		if(rightGame.active)
 			rightGame.update();
 	}
 	
-	this.checkPlayerDeath = function() {
-		if(player.age > 100) {
-			this.active = false;
-			leftGame.active = false;
-			rightGame.active = false;
-			bottomGame.active = false;
-			ctx.clearRect(0,0,canvas.width, canvas.height);
-			leftCtx.clearRect(0,0,leftCanvas.width, leftCanvas.height);
-			rightCtx.clearRect(0,0,rightCanvas.width, rightCanvas.height);
-			bottomCtx.clearRect(0,0,bottomCanvas.width, bottomCanvas.height);
-			
+	function checkNPCDeath() {
+		for(var i in NPCs) {
+			var NPC = NPCs[i];
+			if(NPC.hp <= 0)
+				NPCs.splice(i, 1);
 		}
 	};
 	
@@ -526,15 +498,25 @@ function Game() {
 		// sub functions
 		function getObjectsToDraw() {
 			var objectList = [];
-			//objectList.push(player);
+			//objectList.push(player);			
 			objectList = objectList.concat(NPCs);
+			objectList = objectList.concat(getSpeechBubbles());
 			objectList = objectList.concat(trees);
 			objectList = objectList.concat(bushes);
-			objectList = objectList.concat(characters);
 			objectList = objectList.concat(enemies);
-			objectList = objectList.concat(tablets);
-			objectList = objectList.concat(portals);
+			//objectList = objectList.concat(tablets);
+			//objectList = objectList.concat(portals);
 			return objectList;
+		}
+		
+		function getSpeechBubbles() {
+			var speech_bubbles = [];
+			for(var i in NPCs) {
+				if(NPCs[i].speechBubble != null)
+					speech_bubbles.push(NPCs[i].speechBubble);
+			}
+			
+			return speech_bubbles;
 		}
 	
 	function drawPane() {
@@ -599,8 +581,8 @@ function Game() {
 			leftGame.draw();
 		if(rightGame.active)
 			rightGame.draw();
-		if(bottomGame.active)
-			bottomGame.draw();
+		//if(bottomGame.active)
+			//bottomGame.draw();
 	}
 	
 

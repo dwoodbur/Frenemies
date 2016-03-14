@@ -15,7 +15,7 @@ function MoveRandomDir(NPC) {
 function SwingSword(NPC) {
 	this.execute = function() {
 		NPC.swing();
-		console.log("Swinging.");
+		//console.log("Swinging.");
 		return true;
 	}
 }
@@ -24,7 +24,7 @@ function NearEnemy(NPC) {
 	this.execute = function() {
 		for(var i=0; i<enemies.length; i++) {
 			if(Math.sqrt(Math.pow(enemies[i].x+(enemies[i].w/2) - NPC.x, 2) + Math.pow(enemies[i].y - NPC.y, 2)) < 100) {
-				console.log("There is an enemy!");
+				//console.log("There is an enemy!");
 				return true;
 			}
 		}
