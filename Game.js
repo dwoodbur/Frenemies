@@ -323,7 +323,7 @@ function Game() {
 			for(var j in enemies) {
 				var enemy = enemies[j];
 				if(enemyCollide(enemy, NPC)) {
-					NPC.damage();
+					NPC.damage(6);
 				}
 			}
 		}
@@ -373,8 +373,13 @@ function Game() {
 						}
 						// NPC
 						else {
-							enemyHit.damage();
-							NPC.say("Suck it!", 100);
+							enemyHit.damage(0.02);
+							if(enemyHit.hp <= 0){
+								NPC.hp = 100;
+                        NPC.healthBar.update();
+								NPC.say("Suck it!", 100);
+							}
+								
 						}
 					}
 				}
