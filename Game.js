@@ -58,6 +58,9 @@ function Game() {
 	this.cameraMode = "camera";
 	this.cameraMode = "NPC";
 	
+	
+	POSSIBLE_NAMES = ["Dylan","Connor","Ryan","Barack","Kanye","Beyonce","Magellan","Virgil","Neil Patrick Harris"];
+	
 	/*----------------*/
 	/* INITIALIZATION */
 	/*----------------*/
@@ -316,8 +319,9 @@ function Game() {
 		for(var i in NPCs) {
 			var NPC = NPCs[i];
 			if(NPC.swinging) {
-				for(var j=0; j<enemies.length; j++) {
-					var enemy = enemies[j];
+				var badGuys = enemies.concat(NPC.enemyNPCs);
+				for(var j=0; j<badGuys.length; j++) {
+					var enemy = badGuys[j];
 					var enemyHit = null;
 					if(NPC.dir == "u") {
 						if(enemy.y+enemy.h < NPC.y+NPC.h &&
@@ -348,8 +352,18 @@ function Game() {
 						}
 					}
 					if(enemyHit != null) {
-						enemies.splice(j,1);
-						NPC.say("Gotcha!", 100);
+						// Enemy
+						//if(j < enemies.length) {
+						if(enemyHit.type == "enemy") {
+							enemies.splice(j,1);
+							//if(Math.random()<.3)
+								//NPC.say("Gotcha!", 40);
+						}
+						// NPC
+						else {
+							enemyHit.damage();
+							NPC.say("Suck it!", 100);
+						}
 					}
 				}
 				if(enemies.length == 0) {

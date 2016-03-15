@@ -12,6 +12,48 @@ function MoveRandomDir(NPC) {
 	}
 }
 
+function TiredOfExploring(NPC) {
+	this.execute = function() {
+		if(NPC.tiredOfExploring > 0) {
+			return true;
+		}
+		else return false;
+	}
+}
+
+/*function MoveRandomPoint(NPC) {
+	this.execute = function() {
+		if(NPC.tiredOfExploring > 0)
+			return false;
+		else if(NPC.exploreTarget == null) {
+			NPC.exploreTarget = getPointNear(NPC, 60+Math.floor(Math.random()*80));
+			console.log("Getting target");
+		}
+		else {console.log("Moving to target");
+			NPC.moveTo(NPC.exploreTarget);
+			var dist = Math.sqrt(Math.pow(NPC.exploreTarget.x - NPC.x, 2) + Math.pow(NPC.exploreTarget.y - NPC.y, 2));
+			
+			if(dist < 25) {
+				NPC.tiredOfExploring = 100;
+				NPC.exploreTarget = null;
+			}
+		}
+		return true;
+	}
+}*/
+
+function getPointNear(object, dist) {
+	var point = {x:0, y:0};
+	do {
+		point.x = object.x + dist*Math.cos(Math.random()*2*Math.PI);
+	} while(point.x < 0 || point.x > room.w)
+	do {
+		point.y = object.y + dist*Math.sin(Math.random()*2*Math.PI);
+	} while(point.y < 0 || point.y > room.h)
+	console.log("POINT " + point.x + " " + point.y);
+	return point;
+}
+
 function SwingSword(NPC) {
 	this.execute = function() {
 		NPC.swing();
@@ -133,6 +175,7 @@ function Betray(NPC){
 		}
 		if(!(NPC.target in NPC.enemyNPCs)){
 			NPC.enemyNPCs.push(NPC.target);
+			NPC.target.enemyNPCs.push(NPC);
 		}
 		// Calculate how much the NPC needs to betray someone
 		if(NPC.target != null) {

@@ -13,9 +13,9 @@ function NPC(x, y) {
 	this.regSpeed = 4;
 	this.diagSpeed = this.regSpeed*.707;
 	this.speed = this.regSpeed;
-	this.tag = "player";
 	this.stage = 0;
 	this.age = 0;
+	this.type = "NPC";
 	
 	this.sword = new Sword(this.x, this.y, this);
 	this.dir = "";
@@ -49,12 +49,16 @@ function NPC(x, y) {
 	
 	this.cameraLock = false;
 	
+	this.tiredOfExploring = 0;
+	this.exploreTarget = null;
+	
 	var skinTones = ["#FAE7D0", "#DFC183","#AA724B","#C8ACA3","#E8CDA8","#7B4B2A","#FFCC99","#CEAB69","#935D37",
 		"#C0A183","#CAA661","#573719","#FEB186","#B98865","#7B4B2A","#C18E74","#B58A3F","#483728"];
 	this.color = skinTones[Math.floor(Math.random()*skinTones.length)];
 	this.color2 = ColorLuminance(this.color, -.3);
 	
-
+	this.name = POSSIBLE_NAMES[Math.floor(Math.random()*POSSIBLE_NAMES.length)];
+	POSSIBLE_NAMES.splice(POSSIBLE_NAMES.indexOf(this.name), 1);
 	
 	/* DRAW */
 	
@@ -94,6 +98,8 @@ function NPC(x, y) {
 			if(this.speechDur <= 0)
 				this.speechBubble = null;
 		}
+		if(this.tiredOfExploring > 0)
+			this.tiredOfExploring--;
 	};
 	
 	this.draw = function() {
@@ -115,6 +121,9 @@ function NPC(x, y) {
 		}*/
 		
 		ctx.fillStyle = "black";
+		ctx.font = "10px Arial";
+		ctx.fillText(this.name, room.x+this.x+(this.w/2) - .5*ctx.measureText(this.name).width, room.y+this.h+8+this.y);
+		
 		ctx.globalAlpha = .6;
 		var x1 = room.x+this.x+this.w;
 		var y1 = room.y+this.y+this.h;
@@ -241,7 +250,6 @@ function NPC(x, y) {
 	
 	this.moveTo = function(target){
 		this.target = target;
-		
 		if(this.target == null) {
 			console.log("MoveTarget is null!");
 			return;
@@ -342,6 +350,9 @@ function NPC(x, y) {
 		
 		var BetrayalBranch = new Sequence([BetrayalCheck,BetrayalAction]);
 		
+		//var MoveRandomPointAction = new Action(new MoveRandomPoint(this));
+		var MoveRandomAction = new Action(new MoveRandomDir(this));
+		
 		this.root = new Selector([CheckForEnemySequence, BetrayalBranch, MoveRandomAction]);
 	};
 	this.initTree();
@@ -351,7 +362,7 @@ function NPC(x, y) {
 	};
 	
 	this.damage = function() {
-		this.hp-=5;
+		this.hp-=6;
 		if(this.healthBar != null)
 			this.healthBar.update();
 	};
