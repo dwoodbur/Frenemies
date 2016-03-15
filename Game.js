@@ -4,15 +4,6 @@
  *  
  */
 
-/*
- * 	Game
- * 
- * 	-Contains Game Objects
- * 	-Update()
- *  -Draw()
- * 
- */
-
 function Game() {
 	
 	/*------*/
@@ -88,26 +79,16 @@ function Game() {
 	
 	// Updates game state.
 	this.update = function() {
-  		// Move player, handle effects of movement.	
-		//setPlayerSpeed();
 		handleCameraInput();
 		
 		handleCollisionDetection();
-		
 		checkNPCDeath();
-			
-		// Update objects that need.
-		updateObjects();
 		
+		updateObjects();
 		updateNPCs();
-			
-		// Update canvases that need.
-		updateOtherCanvases();
 			
 		// Check game over.
 		//this.checkPlayerDeath();
-		
-		
 	};
 	
 	// Draws frame.
@@ -120,7 +101,6 @@ function Game() {
 		drawObjects();
 		
 		drawUI();
-		drawOtherCanvases();
 	};
 	
 	
@@ -188,9 +168,9 @@ function Game() {
 			if(wave == 0)
 				numEnemies = 60;
 			else if(wave == 1)
-				numEnemies = 80;
+				numEnemies = 90;
 			else if(wave == 2)
-				numEnemies = 100;
+				numEnemies = 120;
 			else if(wave == 3)
 				numEnemies = 150;
 			else numEnemies = 200;
@@ -449,15 +429,6 @@ function Game() {
 		time = this.shadowMult/2;
 	}
 	
-	function updateOtherCanvases() {
-		//if(bottomGame.active)
-			//bottomGame.update();
-		if(leftGame.active)
-			leftGame.update();
-		if(rightGame.active)
-			rightGame.update();
-	}
-	
 	function checkNPCDeath() {
 		for(var i in NPCs) {
 			var NPC = NPCs[i];
@@ -537,16 +508,12 @@ function Game() {
 	
 	function drawData() {
 		ctx.fillStyle = "white";
-		ctx.fillText("DATA", 5, 10);
+		ctx.font = "10px Arial";
 		
-		ctx.fillText("Room", 5, 30);
-		ctx.fillText("(x,y): ("+room.x+","+room.y+")", 5, 40);
-			
-		//ctx.fillText("Player", 5, 55);
-		//ctx.fillText("(x,y): ("+player.x+","+player.y+")", 5, 65);
-			
-		ctx.fillText("Mouse", 5, 80);
-		ctx.fillText("(x,y): ("+mouse.x+","+mouse.y+")", 5, 90);
+		ctx.fillText("Wave: " + (wave+1), 5, 10);
+		ctx.fillText("Bots Remaining: " + NPCs.length, 5, 25);
+		ctx.fillText("Enemies: " + enemies.length, 5, 40);
+		
 	}
 	
 	function drawClock() {
@@ -574,18 +541,7 @@ function Game() {
 			timeChanged--;
 		}
 	}
-	
-	function drawOtherCanvases() {
-		if(leftGame.active)
-			leftGame.draw();
-		if(rightGame.active)
-			rightGame.draw();
-		//if(bottomGame.active)
-			//bottomGame.draw();
-	}
-	
-
-	
+		
 	
 	/*---------------------------*/
 	/* EVENT FUNCTIONS/LISTENERS */
@@ -615,15 +571,6 @@ function Game() {
     //canvas.addEventListener('mouseout', function(evt){nullFoodPics()}, false);
     canvas.addEventListener('mousedown', function(evt){checkClick(getMousePos(canvas, evt))}, false);
     
-    
-    /*---------------------*/
-    /* SIDE CANVAS EFFECTS */
-    /*---------------------*/
-   
-   function triggerSideStarEffect(duration, numStars) {
-   		leftGame.initStarEffect(duration, numStars, leftCanvas);
-   		rightGame.initStarEffect(duration, numStars, rightCanvas);
-   }
    
    
    /*

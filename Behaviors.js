@@ -51,7 +51,7 @@ function NearEnemy(NPC) {
 	}
 }
 
-
+/*
 function TurnToNearestEnemy(NPC) {
 	this.execute = function() {
 		var minDist = 999;
@@ -73,19 +73,27 @@ function TurnToNearestEnemy(NPC) {
 			else dy = NPC.y - nearestEnemy.y;
 			
 			var angle=Math.atan(dy/dx);
+<<<<<<< HEAD
+			if(angle > 3*Math.PI/4 || angle < -3*Math.PI/4)
+=======
 			if(angle < Math.PI/4 || angle > 3*Math.PI/2)
 				NPC.turnRight();
 			else if(angle < 3*Math.PI/4)
 				NPC.turnUp();
 			else if(angle < 5*Math.PI/4)
+>>>>>>> 8e743212a4c92112e15efb7121c895f3961288f3
 				NPC.turnLeft();
-			else if(angle < 7*Math.PI/4)
+			else if(angle > Math.PI/4)
+				NPC.turnUp();
+			else if(angle > -Math.PI/4)
+				NPC.turnRight();
+			else if(angle > -3*Math.PI/4)
 				NPC.turnDown();
 		}
 		return true;
 	};
 }
-
+*/
 
 // Betrayal stuff
 
@@ -93,7 +101,7 @@ function ShouldBetray(NPC){
 	this.execute = function(){
 		
 		// Calculate how much the NPC needs to betray someone
-		var necessity = 2*(1 - NPC.hp/100) ;
+		var necessity = 2*(1 - NPC.hp/100) - 1;
 		if(necessity < NPC.selfishness) {
 			return false;
 		}
@@ -120,10 +128,16 @@ function ShouldBetray(NPC){
 
 function Betray(NPC){
 	this.execute = function(){
+		if(!(NPC.target in NPC.relationships)){
+			NPC.relationships[NPC.target] = -1;
+		}
+		if(!(NPC.target in NPC.enemyNPCs)){
+			NPC.enemyNPCs.push(NPC.target);
+		}
 		// Calculate how much the NPC needs to betray someone
 		if(NPC.target != null) {
-		if(NPC.target.hp >= 0)
-			NPC.attack(NPC.target);
+			if(NPC.target.hp >= 0)
+				NPC.attack(NPC.target);
 		}
 		return true;
 	};

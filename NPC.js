@@ -41,6 +41,9 @@ function NPC(x, y) {
 	this.charisma = 0;
 	this.bravery = 0;
 	
+	this.relationships = [];
+	this.enemyNPCs = [];
+	
 	this.speechBubble = null;
 	this.speechDur = 0;
 	
@@ -267,7 +270,6 @@ function NPC(x, y) {
 			}
 			// If not facing target, face it
 			else{
-				console.log("not facing");
 				this.faceTarget(target);
 			}
 		}
@@ -326,7 +328,7 @@ function NPC(x, y) {
 		var SwingSwordAction = new Action(new SwingSword(this));
 		
 		var NearEnemyCheck = new Check(new NearEnemy(this));
-		var FaceEnemyAction = new Action(new TurnToNearestEnemy(this));
+		//var FaceEnemyAction = new Action(new TurnToNearestEnemy(this));
 		
 		//var CheckForEnemySequence = new Sequence([NearEnemyCheck, FaceEnemyAction, SwingSwordAction]);
 		var FightAction = new Action(new Fight(this));
