@@ -311,7 +311,7 @@ function Game() {
 			for(var j in enemies) {
 				var enemy = enemies[j];
 				if(enemyCollide(enemy, NPC)) {
-					NPC.damage();
+					NPC.damage(6);
 				}
 			}
 		}
@@ -361,7 +361,7 @@ function Game() {
 						}
 						// NPC
 						else {
-							enemyHit.damage();
+							enemyHit.damage(0.02);
 							NPC.say("Suck it!", 100);
 						}
 					}

@@ -10,7 +10,7 @@ function NPC(x, y) {
 	this.y = y;
 	this.w = 28;
 	this.h = 50;
-	this.regSpeed = 4;
+	this.regSpeed = 2;
 	this.diagSpeed = this.regSpeed*.707;
 	this.speed = this.regSpeed;
 	this.stage = 0;
@@ -32,8 +32,6 @@ function NPC(x, y) {
 	this.target = null;
 	
 	this.moving = false;
-	this.maxHealth = 100;
-	this.health = this.maxHealth;
 	this.inCombat = false;
 	
 	// Personality
@@ -258,14 +256,15 @@ function NPC(x, y) {
 			console.log("MoveTarget is null!");
 			return;
 		}
+		var moveTar = {x:target.x,y:target.y};
 		this.moving = true;
-		if(this.x + 25 < target.x) 
+		if(this.x + 25 < moveTar.x) 
 			this.moveFor(25,'r');
-		else if(this.x - 25 > target.x) 
+		else if(this.x - 25 > moveTar.x) 
 			this.moveFor(25,'l');
-		else if(this.y - 25 > target.y) 
+		else if(this.y - 25 > moveTar.y) 
 			this.moveFor(25,'u');
-		else if(this.y + 25 < target.y) 
+		else if(this.y + 25 < moveTar.y) 
 			this.moveFor(25,'d');
 		else
 			this.moving = false;
@@ -273,7 +272,7 @@ function NPC(x, y) {
 	
 	this.attack = function(target){
 		// If close enough to target
-		if(Math.sqrt(Math.pow(target.x - this.x, 2) + Math.pow(target.y - this.y, 2)) < 70){
+		if(Math.sqrt(Math.pow(target.x - this.x, 2) + Math.pow(target.y - this.y, 2)) < this.sword.range){
 			this.moving = false;
 			// If facing target, swing at it
 			if(this.isFacing(target)){
@@ -366,8 +365,8 @@ function NPC(x, y) {
 		this.root.execute();
 	};
 	
-	this.damage = function() {
-		this.hp-=6;
+	this.damage = function(amount) {
+		this.hp-=amount;
 		if(this.healthBar != null)
 			this.healthBar.update();
 	};

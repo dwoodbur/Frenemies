@@ -83,9 +83,10 @@ function Fight(NPC) {
 
 function NearEnemy(NPC) {
 	this.execute = function() {
-		for(var i=0; i<enemies.length; i++) {
-			if(Math.sqrt(Math.pow(enemies[i].x+(enemies[i].w/2) - NPC.x, 2) + Math.pow(enemies[i].y - NPC.y, 2)) < 100) {
-				console.log("There is an enemy!");
+		var hostiles = enemies;
+		hostiles.concat(NPC.enemyNPCs);
+		for(var i=0; i<hostiles.length; i++) {
+			if(Math.sqrt(Math.pow(hostiles[i].x+(hostiles[i].w/2) - NPC.x, 2) + Math.pow(hostiles[i].y - NPC.y, 2)) < NPC.sword.range + (NPC.bravery+1) * 200) {
 				return true;
 			}
 		}
@@ -172,6 +173,7 @@ function Betray(NPC){
 	this.execute = function(){
 		if(!(NPC.target in NPC.relationships)){
 			NPC.relationships[NPC.target] = -1;
+			NPC.say("Die, " + NPC.target.name +"!",140);
 		}
 		if(!(NPC.target in NPC.enemyNPCs)){
 			NPC.enemyNPCs.push(NPC.target);
@@ -196,7 +198,7 @@ function Wander(NPC) {
 			
 			var angle = Math.random() * 2 *  Math.PI;
 			var dist = 50 + Math.random() * 350;
-			NPC.wanderTimer = dist;
+			NPC.wanderTimer = dist * 0.5;
 			var pos = {
 				x: NPC.x + Math.cos(angle) * dist,
 				y: NPC.y + Math.sin(angle) * dist
