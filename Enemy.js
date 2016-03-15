@@ -13,6 +13,7 @@ function Enemy(x,y) {
 	this.color = "grey";
 	this.alertDx = 0;
 	this.alertDy = 0;
+	this.type = "enemy";
 	
 	this.mode = "wander";
 	this.direction = "";
