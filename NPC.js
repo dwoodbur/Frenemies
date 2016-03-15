@@ -41,6 +41,9 @@ function NPC(x, y) {
 	this.charisma = 0;
 	this.bravery = 0;
 	
+	this.relationships = [];
+	this.enemyNPCs = [];
+	
 	this.speechBubble = null;
 	this.speechDur = 0;
 	
