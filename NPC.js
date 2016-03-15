@@ -52,7 +52,7 @@ function NPC(x, y) {
 	
 	this.fleeing = false;
    
-   this.stepLength = 100;
+   this.stepLength = 50;
 	
 	var skinTones = ["#FAE7D0", "#DFC183","#AA724B","#C8ACA3","#E8CDA8","#7B4B2A","#FFCC99","#CEAB69","#935D37",
 		"#C0A183","#CAA661","#573719","#FEB186","#B98865","#7B4B2A","#C18E74","#B58A3F","#483728"];
@@ -282,7 +282,7 @@ function NPC(x, y) {
       var deltaX = moveTar.x - this.x;
       var deltaY = moveTar.y - this.y;
 
-      if(Math.abs(deltaX)>this.stepLength && Math.abs(deltaX)>Math.abs(deltaY)){
+      if(Math.abs(deltaX)>5 && Math.abs(deltaX)>Math.abs(deltaY)){
          if(deltaX > 0){
             this.moveFor(Math.min(this.stepLength,Math.abs(deltaX)),'r');
          }
@@ -291,7 +291,7 @@ function NPC(x, y) {
             this.moveFor(Math.min(this.stepLength,Math.abs(deltaX)),'l');
          }
       }
-      else if(Math.abs(deltaY)>this.stepLength){
+      else if(Math.abs(deltaY)>5){
          if(deltaY<=0) 
             this.moveFor(Math.min(this.stepLength,Math.abs(deltaY)),'u');
          else
