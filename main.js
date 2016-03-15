@@ -17,6 +17,8 @@ game = new Game();
 
 frames=0; // framecount
 
+GAME_PAUSED = false;
+
 /*
  *   MAIN LOOP 
  */
@@ -25,7 +27,6 @@ function MainLoop() {
 	// Update active game states.
 	if(game.active)
 		game.update();
-	
 	// Draw active game states.
 	if(game.active)
 		game.draw();

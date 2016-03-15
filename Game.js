@@ -38,7 +38,8 @@ function Game() {
 		TWO: 50,
 		THREE: 51,
 		FOUR: 52,
-		FIVE: 53
+		FIVE: 53,
+		P: 80
 	};
 	tabFlag = false;
 	
@@ -83,12 +84,13 @@ function Game() {
 	// Updates game state.
 	this.update = function() {
 		handleCameraInput();
-		
+		if(!GAME_PAUSED) {
 		handleCollisionDetection();
 		checkNPCDeath();
 		
 		updateObjects();
 		updateNPCs();
+		}
 			
 		// Check game over.
 		//this.checkPlayerDeath();
@@ -275,6 +277,7 @@ function Game() {
 			keyBurns["TAB"] = 15;
 		}
 		
+		handlePauseGame();
 			
 		// Tick key burnouts.
 		for(var i in keyBurns) {
@@ -302,6 +305,15 @@ function Game() {
 				tabFlag = false;
 			else tabFlag = true;
 		}
+		
+	function handlePauseGame() {
+		if(keys.isPressed(keyCodes.P) && !("P" in keyBurns)) {
+			if(GAME_PAUSED)
+				GAME_PAUSED = false;
+			else GAME_PAUSED = true;
+			keyBurns["P"] = 15;
+		}
+	}
 	
 	function handleCollisionDetection() {
 		

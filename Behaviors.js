@@ -100,15 +100,16 @@ function ShouldIFight(NPC) {
 			return true;
 		else if(NPC.bravery < -.75)
 			return false;
-		var prob = .5;
-		var nearEnemies = [];
+			
+		/*var nearEnemies = [];
 		for(var i=0; i<enemies.length; i++) {
-			if(Math.sqrt(Math.pow(enemies[i].x+(enemies[i].w/2) - NPC.x, 2) + Math.pow(enemies[i].y - NPC.y, 2)) < 60) {
+			if(Math.sqrt(Math.pow(enemies[i].x+(enemies[i].w/2) - NPC.x, 2) + Math.pow(enemies[i].y - NPC.y, 2)) < 70) {
 				nearEnemies.push(enemies[i]);
 			}
-		}
+		}*/
 		
-		prob += NPC.bravery/4;
+		var prob = ((NPC.bravery+1)/2)*.5 + (NPC.hp/100)*.5
+		
 		
 		if(Math.random()<prob)
 			return true;
@@ -124,7 +125,9 @@ function Flight(NPC) {
 		var rightEnemies = [];
 		for(var i=0; i<enemies.length; i++) {
 			var enemy = enemies[i];
-			if(Math.sqrt(Math.pow(enemies[i].x+(enemies[i].w/2) - NPC.x, 2) + Math.pow(enemies[i].y - NPC.y, 2)) < 60) {
+			if(Math.sqrt(Math.pow(enemies[i].x+(enemies[i].w/2) - NPC.x, 2) + Math.pow(enemies[i].y - NPC.y, 2)) < 120
+			
+			) {
 				if(enemy.x+enemy.w/2 > NPC.x+NPC.w/2)
 					rightEnemies.push(enemy);
 				else if(enemy.x+enemy.w/2 < NPC.x+NPC.w/2)
