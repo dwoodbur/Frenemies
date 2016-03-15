@@ -170,6 +170,7 @@ function NPC(x, y) {
 	/* MOVEMENT */
 	
 	this.moveUp = function() {
+		if(this.fleeing)
 		this.y = Math.round(Math.max(this.y-this.speed, room.y));
 		if(!keys.isPressed(keyCodes.SHIFT))
 			this.dir = "u";

@@ -108,7 +108,7 @@ function ShouldIFight(NPC) {
 			}
 		}*/
 		
-		var prob = ((NPC.bravery+1)/2)*.5 + (NPC.hp/100)*.5
+		var prob = ((NPC.bravery+1)/2)*.2 + (NPC.hp/100)*.8;
 		
 		
 		if(Math.random()<prob)
