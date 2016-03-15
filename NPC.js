@@ -277,6 +277,7 @@ function NPC(x, y) {
 		else{
 			this.moveTo(target);
 		}
+		this.wanderTimer = 0;
 	};
 	
 	this.isFacing = function(target){
