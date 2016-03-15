@@ -62,6 +62,8 @@ function Game() {
 	
 	POSSIBLE_NAMES = ["Dylan","Connor","Ryan","Barack","Kanye","Beyonce","Magellan","Virgil","Neil Patrick Harris"];
 	
+	DRAW_TARGETS = true;
+	
 	/*----------------*/
 	/* INITIALIZATION */
 	/*----------------*/
@@ -107,12 +109,9 @@ function Game() {
 		
 		drawUI();
 		
-		for(var i in NPCs) {
-			if(NPCs[i].target != null) {
-				ctx.fillStyle = "red";
-				ctx.fillRect(NPCs[i].target.x, NPCs[i].target.y, NPCs[i].w, NPCs[i].h);
-			}
-		}
+		if(DRAW_TARGETS)
+			drawTargets();
+		
 	};
 	
 	
@@ -131,11 +130,11 @@ function Game() {
 	
 	function generateNPCs() {
 		NPCs[0] = new NPC(450, 450);
-		/*NPCs[1] = new NPC(650, 450);
+		NPCs[1] = new NPC(650, 450);
 		NPCs[2] = new NPC(850, 450);
 		NPCs[3] = new NPC(450, 300);
 		NPCs[4] = new NPC(650, 300);
-		NPCs[5] = new NPC(850, 300);*/
+		NPCs[5] = new NPC(850, 300);
 	}
 	
 	function generateObjects() {
@@ -178,7 +177,7 @@ function Game() {
 			var ENEMY_HEIGHT = 30;
 			
 			if(wave == 0)
-				numEnemies = 0;
+				numEnemies = 60;
 			else if(wave == 1)
 				numEnemies = 90;
 			else if(wave == 2)
@@ -577,6 +576,15 @@ function Game() {
 		if(timeChanged > 0) {
 			drawClock();
 			timeChanged--;
+		}
+	}
+	
+	function drawTargets() {
+		for(var i in NPCs) {
+			if(NPCs[i].target != null) {
+				ctx.fillStyle = "red";
+				ctx.fillRect(room.x+NPCs[i].target.x, room.y+NPCs[i].target.y, NPCs[i].w, NPCs[i].h);
+			}
 		}
 	}
 		
