@@ -32,8 +32,6 @@ function NPC(x, y) {
 	this.target = null;
 	
 	this.moving = false;
-	this.maxHealth = 100;
-	this.health = this.maxHealth;
 	this.inCombat = false;
 	
 	// Personality
@@ -59,8 +57,12 @@ function NPC(x, y) {
 	this.color = skinTones[Math.floor(Math.random()*skinTones.length)];
 	this.color2 = ColorLuminance(this.color, -.3);
 	
+
+	this.wanderTimer = 0;
+
 	this.name = POSSIBLE_NAMES[Math.floor(Math.random()*POSSIBLE_NAMES.length)];
 	POSSIBLE_NAMES.splice(POSSIBLE_NAMES.indexOf(this.name), 1);
+
 	
 	/* DRAW */
 	
@@ -156,6 +158,7 @@ function NPC(x, y) {
 			this.sword.draw();
 			
 		this.healthBar.draw();
+		
 	};
 	
 	// Sets personality variables to a random value between -1...1
@@ -271,22 +274,25 @@ function NPC(x, y) {
 			console.log("MoveTarget is null!");
 			return;
 		}
+		var moveTar = {x:target.x,y:target.y};
 		this.moving = true;
-		if(this.x + 25 < target.x) 
-			this.moveFor(25,'r');
-		else if(this.x - 25 > target.x) 
-			this.moveFor(25,'l');
-		else if(this.y - 25 > target.y) 
-			this.moveFor(25,'u');
-		else if(this.y + 25 < target.y) 
-			this.moveFor(25,'d');
+		if(this.x + 5 < moveTar.x) 
+			this.moveFor(5,'r');
+		else if(this.x - 5 > moveTar.x) 
+			this.moveFor(5,'l');
+		else if(this.y - 5 > moveTar.y) 
+			this.moveFor(5,'u');
+		else if(this.y + 5 < moveTar.y) 
+			this.moveFor(5,'d');
 		else
 			this.moving = false;
 	};
 	
 	this.attack = function(target){
 		// If close enough to target
-		if(Math.sqrt(Math.pow(target.x - this.x, 2) + Math.pow(target.y - this.y, 2)) < 70){
+		this.target = target;
+
+		if(Math.sqrt(Math.pow(target.x - this.x , 2) + Math.pow(target.y - this.y, 2)) < this.sword.range){
 			this.moving = false;
 			// If facing target, swing at it
 			if(this.isFacing(target)){
@@ -302,6 +308,7 @@ function NPC(x, y) {
 		else{
 			this.moveTo(target);
 		}
+		this.wanderTimer = 0;
 	};
 	
 	this.isFacing = function(target){
@@ -369,10 +376,10 @@ function NPC(x, y) {
 		
 		var BetrayalBranch = new Sequence([BetrayalCheck,BetrayalAction]);
 		
-		//var MoveRandomPointAction = new Action(new MoveRandomPoint(this));
-		var MoveRandomAction = new Action(new MoveRandomDir(this));
+		var WanderAction = new Action(new Wander(this));
 		
-		this.root = new Selector([SurvivalSequence, BetrayalBranch, MoveRandomAction]);
+		this.root = new Selector([SurvivalSequence, BetrayalBranch, WanderAction]);
+
 	};
 	this.initTree();
 	
@@ -380,8 +387,8 @@ function NPC(x, y) {
 		this.root.execute();
 	};
 	
-	this.damage = function() {
-		this.hp-=6;
+	this.damage = function(amount) {
+		this.hp-=amount;
 		if(this.healthBar != null)
 			this.healthBar.update();
 	};

@@ -66,14 +66,16 @@ function Fight(NPC) {
 	this.execute = function() {
 		var minDist = 9999;
 		var nearestEnemy = null;
-		for(var i=0; i<enemies.length; i++) {
-			var dist = Math.sqrt(Math.pow(enemies[i].x+(enemies[i].w/2) - NPC.x, 2) + Math.pow(enemies[i].y - NPC.y, 2))
+		var hostiles = enemies;
+		hostiles.concat(NPC.enemyNPCs);
+		for(var i=0; i<hostiles.length; i++) {
+			var dist = Math.sqrt(Math.pow(hostiles[i].x+(hostiles[i].w/2) - NPC.x, 2) + Math.pow(hostiles[i].y - NPC.y, 2))
 			if(dist < minDist) {
-				nearestEnemy = enemies[i];
+				nearestEnemy = hostiles[i];
 				minDist = dist;
 			}
 		}
-		if(minDist <= 50) {
+		if(minDist < NPC.sword.range) {
 			NPC.attack(nearestEnemy);
 			return true;
 		}
@@ -83,8 +85,12 @@ function Fight(NPC) {
 
 function NearEnemy(NPC, dist) {
 	this.execute = function() {
+
+		var hostiles = enemies;
+		hostiles.concat(NPC.enemyNPCs);
 		for(var i=0; i<enemies.length; i++) {
 			if(Math.sqrt(Math.pow(enemies[i].x+(enemies[i].w/2) - NPC.x, 2) + Math.pow(enemies[i].y - NPC.y, 2)) < dist) {
+
 				return true;
 			}
 		}
@@ -224,7 +230,7 @@ function ShouldBetray(NPC){
 				bestTargetIndex = i;
 			}
 		}
-		if(bestTargetScore + NPC.selfishness > 0){
+		if(bestTargetScore * (1+NPC.selfishness)*0.5 >= 1){
 			NPC.target = NPCs[bestTargetIndex];
 			return true;
 		}
@@ -234,15 +240,18 @@ function ShouldBetray(NPC){
 
 function Betray(NPC){
 	this.execute = function(){
-		if(!(NPC.target in NPC.relationships)){
+		
+		// Calculate how much the NPC needs to betray someone
+		if(NPC.target != null) {
+			if(!(NPC.target in NPC.relationships)){
 			NPC.relationships[NPC.target] = -1;
+			NPC.say("Die, " + NPC.target.name +"!",140);
+			NPC.target.say("How could you?! " ,140);
 		}
 		if(!(NPC.target in NPC.enemyNPCs)){
 			NPC.enemyNPCs.push(NPC.target);
 			NPC.target.enemyNPCs.push(NPC);
 		}
-		// Calculate how much the NPC needs to betray someone
-		if(NPC.target != null) {
 			if(NPC.target.hp >= 0)
 				NPC.attack(NPC.target);
 		}
@@ -250,3 +259,28 @@ function Betray(NPC){
 	};
 }
 
+// Wander Behavior
+
+function Wander(NPC) {
+	this.execute = function() {
+		
+		if(NPC.wanderTimer <= 0 || NPC.target.x>=canvas.width || NPC.target.x<=0 ||
+			NPC.target.y >= canvas.height || NPC.target.y <= 0){
+			
+			var angle = Math.random() * 2 *  Math.PI;
+			var dist = 50 + Math.random() * 350;
+			NPC.wanderTimer = dist * 0.5;
+			var pos = {
+				x: NPC.x + Math.cos(angle) * dist,
+				y: NPC.y + Math.sin(angle) * dist
+			};
+
+			NPC.moveTo(pos);
+		}
+		else{
+			NPC.wanderTimer --;
+			NPC.moveTo(NPC.target);
+		}
+		return true;
+	};
+}
