@@ -149,9 +149,9 @@ function Flight(NPC) {
 		var right = rightEnemies.length;
 		var left = leftEnemies.length;
 		if(above <= Math.min(below, right, left))
-			NPC.moveTo({x: NPC.x, y: Math.max(NPC.y+50, 0)});
+			NPC.moveTo({x: NPC.x, y: Math.min(NPC.y+50, canvas.height)});
 		else if(below <= Math.min(above, right, left))
-			NPC.moveTo({x: NPC.x, y: Math.min(NPC.y-50, 0)}); 
+			NPC.moveTo({x: NPC.x, y: Math.max(NPC.y-50, 0)}); 
 		else if(right <= Math.min(above, below, left))
 			NPC.moveTo({x: Math.min(NPC.x+50, canvas.width), y: NPC.y});
 		else NPC.moveTo({x: Math.max(NPC.x-50, 0), y: NPC.y});
@@ -267,9 +267,10 @@ function Wander(NPC) {
 		if(NPC.wanderTimer <= 0 || NPC.target.x>=canvas.width || NPC.target.x<=0 ||
 			NPC.target.y >= canvas.height || NPC.target.y <= 0){
 			
-			var angle = Math.random() * 2 *  Math.PI;
+			//var angle = Math.random() * 2 *  Math.PI;
+			var angle = Math.random()*2*Math.PI - Math.PI;
 			var dist = 50 + Math.random() * 350;
-			NPC.wanderTimer = dist * 0.5;
+			NPC.wanderTimer = dist * .5;
 			var pos = {
 				x: NPC.x + Math.cos(angle) * dist,
 				y: NPC.y + Math.sin(angle) * dist
@@ -278,7 +279,7 @@ function Wander(NPC) {
 			NPC.moveTo(pos);
 		}
 		else{
-			NPC.wanderTimer --;
+			NPC.wanderTimer--;
 			NPC.moveTo(NPC.target);
 		}
 		return true;
