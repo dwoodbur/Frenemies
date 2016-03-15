@@ -330,7 +330,7 @@ function Game() {
 			for(var j in enemies) {
 				var enemy = enemies[j];
 				if(enemyCollide(enemy, NPC)) {
-					NPC.damage(6);
+					NPC.damage(1);
 				}
 			}
 		}
