@@ -83,16 +83,83 @@ function Fight(NPC) {
 	}
 }
 
-function NearEnemy(NPC) {
+function NearEnemy(NPC, dist) {
 	this.execute = function() {
+
 		var hostiles = enemies;
 		hostiles.concat(NPC.enemyNPCs);
-		for(var i=0; i<hostiles.length; i++) {
-			if(Math.sqrt(Math.pow(hostiles[i].x+(hostiles[i].w/2) - NPC.x, 2) + Math.pow(hostiles[i].y - NPC.y, 2)) < NPC.sword.range + (NPC.bravery+1) * 200) {
+		for(var i=0; i<enemies.length; i++) {
+			if(Math.sqrt(Math.pow(enemies[i].x+(enemies[i].w/2) - NPC.x, 2) + Math.pow(enemies[i].y - NPC.y, 2)) < dist) {
+
 				return true;
 			}
 		}
 		return false;
+	}
+}
+
+function ShouldIFight(NPC) {
+	this.execute = function() {
+		if(NPC.fleeing)
+			return false;
+		if(NPC.bravery > .75)
+			return true;
+		else if(NPC.bravery < -.75)
+			return false;
+			
+		/*var nearEnemies = [];
+		for(var i=0; i<enemies.length; i++) {
+			if(Math.sqrt(Math.pow(enemies[i].x+(enemies[i].w/2) - NPC.x, 2) + Math.pow(enemies[i].y - NPC.y, 2)) < 70) {
+				nearEnemies.push(enemies[i]);
+			}
+		}*/
+		
+		var prob = ((NPC.bravery+1)/2)*.5 + (NPC.hp/100)*.5
+		
+		
+		if(Math.random()<prob)
+			return true;
+		else return false;
+	}
+}
+
+function Flight(NPC) {
+	this.execute = function() {
+		var upEnemies = [];
+		var downEnemies = [];
+		var leftEnemies = [];
+		var rightEnemies = [];
+		for(var i=0; i<enemies.length; i++) {
+			var enemy = enemies[i];
+			if(Math.sqrt(Math.pow(enemies[i].x+(enemies[i].w/2) - NPC.x, 2) + Math.pow(enemies[i].y - NPC.y, 2)) < 120
+			
+			) {
+				if(enemy.x+enemy.w/2 > NPC.x+NPC.w/2)
+					rightEnemies.push(enemy);
+				else if(enemy.x+enemy.w/2 < NPC.x+NPC.w/2)
+					leftEnemies.push(enemy);
+				else if(enemy.y > NPC.y+NPC.h/2)
+					upEnemies.push(enemy);
+				else if(enemy.y < NPC.y-NPC.h/2)
+					downEnemies.push(enemy);
+			}
+		}
+		var above = upEnemies.length;
+		var below = downEnemies.length;
+		var right = rightEnemies.length;
+		var left = leftEnemies.length;
+		if(above <= Math.min(below, right, left))
+			NPC.moveTo({x: NPC.x, y: Math.max(NPC.y+50, 0)});
+		else if(below <= Math.min(above, right, left))
+			NPC.moveTo({x: NPC.x, y: Math.min(NPC.y-50, 0)}); 
+		else if(right <= Math.min(above, below, left))
+			NPC.moveTo({x: Math.min(NPC.x+50, canvas.width), y: NPC.y});
+		else NPC.moveTo({x: Math.max(NPC.x-50, 0), y: NPC.y});
+		
+		NPC.say("Ahh!!", 50);
+		NPC.fleeing = true;
+		
+		return true;
 	}
 }
 

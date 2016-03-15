@@ -50,6 +50,8 @@ function NPC(x, y) {
 	this.tiredOfExploring = 0;
 	this.exploreTarget = null;
 	
+	this.fleeing = false;
+	
 	var skinTones = ["#FAE7D0", "#DFC183","#AA724B","#C8ACA3","#E8CDA8","#7B4B2A","#FFCC99","#CEAB69","#935D37",
 		"#C0A183","#CAA661","#573719","#FEB186","#B98865","#7B4B2A","#C18E74","#B58A3F","#483728"];
 	this.color = skinTones[Math.floor(Math.random()*skinTones.length)];
@@ -102,7 +104,21 @@ function NPC(x, y) {
 		}
 		if(this.tiredOfExploring > 0)
 			this.tiredOfExploring--;
+			
+		if(this.fleeing) {
+			if(!enemyNear(this))
+				this.fleeing = false;
+		}
 	};
+	
+	function enemyNear(NPC) {
+		for(var i=0; i<enemies.length; i++) {
+			if(Math.sqrt(Math.pow(enemies[i].x+(enemies[i].w/2) - NPC.x, 2) + Math.pow(enemies[i].y - NPC.y, 2)) < 50) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	this.draw = function() {
 		if(this.dir == "u")
@@ -150,6 +166,7 @@ function NPC(x, y) {
 		this.selfishness = 2*Math.random() - 1;
 		this.charisma = 2*Math.random() - 1;
 		this.bravery = 2*Math.random() - 1;
+		
 		//this.color = "rgb("+this.selfishness+","+this.charisma+","+this.bravery+")";
 	};
 	this.initPersonality();
@@ -342,13 +359,15 @@ function NPC(x, y) {
 		var MoveRandomAction = new Action(new MoveRandomDir(this));
 		var SwingSwordAction = new Action(new SwingSword(this));
 		
-		var NearEnemyCheck = new Check(new NearEnemy(this));
-		//var FaceEnemyAction = new Action(new TurnToNearestEnemy(this));
+		var InDangerCheck = new Check(new NearEnemy(this, 50));
 		
-		//var CheckForEnemySequence = new Sequence([NearEnemyCheck, FaceEnemyAction, SwingSwordAction]);
+		var FightPersonalityCheck = new Check(new ShouldIFight(this));
 		var FightAction = new Action(new Fight(this));
+		var FightSequence = new Sequence([FightPersonalityCheck, FightAction]);
+		var FlightAction = new Action(new Flight(this));
+		var FightOrFlightSelector = new Selector([FightSequence, FlightAction]);
 		
-		var CheckForEnemySequence = new Sequence([FightAction]);
+		var SurvivalSequence = new Sequence([InDangerCheck, FightOrFlightSelector])
 		
 		// Betrayal tree
 		
@@ -359,7 +378,7 @@ function NPC(x, y) {
 		
 		var WanderAction = new Action(new Wander(this));
 		
-		this.root = new Selector([CheckForEnemySequence, BetrayalBranch, WanderAction]);
+		this.root = new Selector([SurvivalSequence, BetrayalBranch, WanderAction]);
 
 	};
 	this.initTree();
