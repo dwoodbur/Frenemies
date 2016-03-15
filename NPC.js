@@ -10,7 +10,7 @@ function NPC(x, y) {
 	this.y = y;
 	this.w = 28;
 	this.h = 50;
-	this.regSpeed = 2;
+	this.regSpeed = 4;
 	this.diagSpeed = this.regSpeed*.707;
 	this.speed = this.regSpeed;
 	this.stage = 0;
@@ -142,6 +142,7 @@ function NPC(x, y) {
 			this.sword.draw();
 			
 		this.healthBar.draw();
+		
 	};
 	
 	// Sets personality variables to a random value between -1...1
@@ -258,21 +259,23 @@ function NPC(x, y) {
 		}
 		var moveTar = {x:target.x,y:target.y};
 		this.moving = true;
-		if(this.x + 25 < moveTar.x) 
-			this.moveFor(25,'r');
-		else if(this.x - 25 > moveTar.x) 
-			this.moveFor(25,'l');
-		else if(this.y - 25 > moveTar.y) 
-			this.moveFor(25,'u');
-		else if(this.y + 25 < moveTar.y) 
-			this.moveFor(25,'d');
+		if(this.x + 5 < moveTar.x) 
+			this.moveFor(5,'r');
+		else if(this.x - 5 > moveTar.x) 
+			this.moveFor(5,'l');
+		else if(this.y - 5 > moveTar.y) 
+			this.moveFor(5,'u');
+		else if(this.y + 5 < moveTar.y) 
+			this.moveFor(5,'d');
 		else
 			this.moving = false;
 	};
 	
 	this.attack = function(target){
 		// If close enough to target
-		if(Math.sqrt(Math.pow(target.x - this.x, 2) + Math.pow(target.y - this.y, 2)) < this.sword.range){
+		this.target = target;
+
+		if(Math.sqrt(Math.pow(target.x - this.x , 2) + Math.pow(target.y - this.y, 2)) < this.sword.range){
 			this.moving = false;
 			// If facing target, swing at it
 			if(this.isFacing(target)){

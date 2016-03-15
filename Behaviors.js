@@ -66,14 +66,16 @@ function Fight(NPC) {
 	this.execute = function() {
 		var minDist = 9999;
 		var nearestEnemy = null;
-		for(var i=0; i<enemies.length; i++) {
-			var dist = Math.sqrt(Math.pow(enemies[i].x+(enemies[i].w/2) - NPC.x, 2) + Math.pow(enemies[i].y - NPC.y, 2))
+		var hostiles = enemies;
+		hostiles.concat(NPC.enemyNPCs);
+		for(var i=0; i<hostiles.length; i++) {
+			var dist = Math.sqrt(Math.pow(hostiles[i].x+(hostiles[i].w/2) - NPC.x, 2) + Math.pow(hostiles[i].y - NPC.y, 2))
 			if(dist < minDist) {
-				nearestEnemy = enemies[i];
+				nearestEnemy = hostiles[i];
 				minDist = dist;
 			}
 		}
-		if(minDist <= 50) {
+		if(minDist < NPC.sword.range) {
 			NPC.attack(nearestEnemy);
 			return true;
 		}
@@ -161,7 +163,7 @@ function ShouldBetray(NPC){
 				bestTargetIndex = i;
 			}
 		}
-		if(bestTargetScore + NPC.selfishness > 0){
+		if(bestTargetScore * (1+NPC.selfishness)*0.5 >= 1){
 			NPC.target = NPCs[bestTargetIndex];
 			return true;
 		}
