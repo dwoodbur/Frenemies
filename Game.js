@@ -362,6 +362,8 @@ function Game() {
 						// NPC
 						else {
 							enemyHit.damage(0.02);
+							if(enemyHit.hp <= 0)
+								NPC.hp = 100;
 							NPC.say("Suck it!", 100);
 						}
 					}

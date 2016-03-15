@@ -171,16 +171,18 @@ function ShouldBetray(NPC){
 
 function Betray(NPC){
 	this.execute = function(){
-		if(!(NPC.target in NPC.relationships)){
+		
+		// Calculate how much the NPC needs to betray someone
+		if(NPC.target != null) {
+			if(!(NPC.target in NPC.relationships)){
 			NPC.relationships[NPC.target] = -1;
 			NPC.say("Die, " + NPC.target.name +"!",140);
+			NPC.target.say("How could you?! " ,140);
 		}
 		if(!(NPC.target in NPC.enemyNPCs)){
 			NPC.enemyNPCs.push(NPC.target);
 			NPC.target.enemyNPCs.push(NPC);
 		}
-		// Calculate how much the NPC needs to betray someone
-		if(NPC.target != null) {
 			if(NPC.target.hp >= 0)
 				NPC.attack(NPC.target);
 		}
