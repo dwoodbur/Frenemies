@@ -284,8 +284,11 @@ function NPC(x, y) {
 			this.moveFor(5,'u');
 		else if(this.y + 5 < moveTar.y) 
 			this.moveFor(5,'d');
-		else
-			this.moving = false;
+		else{
+         this.moving = false;
+         this.dir='d';
+      }
+			
 	};
 	
 	this.attack = function(target){
