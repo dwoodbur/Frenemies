@@ -101,7 +101,7 @@ function ShouldBetray(NPC){
 	this.execute = function(){
 		
 		// Calculate how much the NPC needs to betray someone
-		var necessity = 2*(1 - NPC.hp/100) ;
+		var necessity = 2*(1 - NPC.hp/100) - 1;
 		if(necessity < NPC.selfishness) {
 			return false;
 		}

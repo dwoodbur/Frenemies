@@ -267,7 +267,6 @@ function NPC(x, y) {
 			}
 			// If not facing target, face it
 			else{
-				console.log("not facing");
 				this.faceTarget(target);
 			}
 		}
