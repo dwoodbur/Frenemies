@@ -143,3 +143,28 @@ function Betray(NPC){
 	};
 }
 
+// Wander Behavior
+
+function Wander(NPC) {
+	this.execute = function() {
+		
+		if(NPC.wanderTimer <= 0 || NPC.target.x>=canvas.width || NPC.target.x<=0 ||
+			NPC.target.y >= canvas.height || NPC.target.y <= 0){
+			
+			var angle = Math.random() * 2 *  Math.PI;
+			var dist = 50 + Math.random() * 350;
+			NPC.wanderTimer = dist;
+			var pos = {
+				x: NPC.x + Math.cos(angle) * dist,
+				y: NPC.y + Math.sin(angle) * dist
+			};
+
+			NPC.moveTo(pos);
+		}
+		else{
+			NPC.wanderTimer --;
+			NPC.moveTo(NPC.target);
+		}
+		return true;
+	};
+}

@@ -54,7 +54,7 @@ function NPC(x, y) {
 	this.color = skinTones[Math.floor(Math.random()*skinTones.length)];
 	this.color2 = ColorLuminance(this.color, -.3);
 	
-
+	this.wanderTimer = 0;
 	
 	/* DRAW */
 	
@@ -342,7 +342,9 @@ function NPC(x, y) {
 		
 		var BetrayalBranch = new Sequence([BetrayalCheck,BetrayalAction]);
 		
-		this.root = new Selector([CheckForEnemySequence, BetrayalBranch, MoveRandomAction]);
+		var WanderAction = new Action(new Wander(this));
+		
+		this.root = new Selector([CheckForEnemySequence, BetrayalBranch, WanderAction]);
 	};
 	this.initTree();
 	
