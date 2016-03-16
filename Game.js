@@ -59,17 +59,25 @@ function Game() {
 	this.cameraMode = "camera";
 	this.cameraMode = "NPC";
 	
+	generatedBot = new NPC(0,0);
+	readyBot = null;
 	
 	POSSIBLE_NAMES = ["Dylan","Connor","Ryan","Barack","Kanye","Beyonce","Magellan","Virgil","Neil Patrick Harris"];
-	POSSIBLE_COLORS = ["#FF0000","#00FF00","#0000FF","#FFFF00","#00FFFF","#FF00FF"];
+	POSSIBLE_COLORS = ["#FF0000","#00FF00","#0000FF","#FFFF00","#00FFFF","#FF00FF","#000000","#F0F0F0F"];
 	
-	var clearEnemies = new Button(canvas.width-100, 10, 90, 27, "Clear", "clear_enemies");
-	var addEnemiesAButton = new Button(canvas.width-100, 42, 90, 27, "Add 25", "add_twentyfive_enemies");
-	var addEnemiesBButton = new Button(canvas.width-100, 74, 90, 27, "Add 50", "add_fifty_enemies");
-	var addEnemiesCButton = new Button(canvas.width-100, 106, 90, 27, "Add 100", "add_hundred_enemies");
+	var clearEnemies = new Button(canvas.width-100, 10, 90, 27, "Clear", "red", "clear_enemies");
+	var addEnemiesAButton = new Button(canvas.width-100, 42, 90, 27, "Add 25", "red", "add_twentyfive_enemies");
+	var addEnemiesBButton = new Button(canvas.width-100, 74, 90, 27, "Add 50", "red", "add_fifty_enemies");
+	var addEnemiesCButton = new Button(canvas.width-100, 106, 90, 27, "Add 100", "red", "add_hundred_enemies");
 	
+	var braveButton = new Button(canvas.width-200, canvas.height-60, 90, 27, "Brave", "green", "add_brave");
+	var wimpButton = new Button(canvas.width-300, canvas.height-60, 90, 27, "Wimp", "green", "add_wimp");
+	var selflessButton = new Button(canvas.width-200, canvas.height-30, 90, 27, "Selfless", "green", "add_selfless");
+	var selfishButton = new Button(canvas.width-300, canvas.height-30, 90, 27, "Selfish", "green", "add_selfish");
+	var generateButton = new Button(canvas.width-100, canvas.height-45, 95, 27, "Generate", "blue", "generate_bot");
 	
 	buttons = [clearEnemies, addEnemiesAButton, addEnemiesBButton, addEnemiesCButton];
+	buttons = buttons.concat([braveButton, wimpButton, selflessButton, selfishButton, generateButton]);
 	
 	/*----------------*/
 	/* INITIALIZATION */
@@ -114,6 +122,12 @@ function Game() {
 		drawBackground();
 		drawObjects();
 		
+		if(readyBot != null) {
+			readyBot.x = mouse.x;
+			readyBot.y = mouse.y;
+			readyBot.draw();
+		}
+		
 		drawUI();
 	};
 	
@@ -137,7 +151,7 @@ function Game() {
 		NPCs[2] = new NPC(850, 450);
 		NPCs[3] = new NPC(450, 300);
 		NPCs[4] = new NPC(650, 300);
-		NPCs[5] = new NPC(850, 300);
+		//NPCs[5] = new NPC(850, 300);
 	}
 	
 	function generateObjects() {
@@ -201,6 +215,18 @@ function Game() {
 					enemies.push(new Enemy(Math.random()*(room.w-ENEMY_WIDTH),
 									   Math.random()*(room.h-ENEMY_HEIGHT)));
 			}
+			
+		function generateBravery(bravery) {
+			generatedBot.bravery = bravery;
+		}
+		function generateSelfishness(selfishness) {
+			generatedBot.selfishness = selfishness;
+		}
+		
+		function generateBot() {
+			readyBot = generatedBot;
+			generatedBot = new NPC(0,0);
+		}
 		
 		function generateTablets() {
 			var TABLET_WIDTH = 15;
@@ -612,6 +638,11 @@ function Game() {
 			if(buttons[i].clickWithin(mousePos))
 				parseButton(buttons[i].id);
 		}
+		
+		if(readyBot != null) {
+			NPCs.push(readyBot);
+			readyBot = null;
+		}
     }
     
     function parseButton(id) {
@@ -623,6 +654,16 @@ function Game() {
     		generateMoreEnemies(50);
     	else if(id == "add_hundred_enemies")
     		generateMoreEnemies(100);
+    	else if(id == "add_brave")
+    		generateBravery(1);
+    	else if(id == "add_wimp")
+    		generateBravery(-1);
+    	else if(id == "add_selfish")
+    		generateSelfishness(1);
+    	else if(id == "add_selfless")
+    		generateSelfishness(-1);
+    	else if(id == "generate_bot")
+    		generateBot();
     	
     		
     }

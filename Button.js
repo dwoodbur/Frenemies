@@ -1,11 +1,11 @@
-function Button(x,y,w,h,text,id) {
+function Button(x,y,w,h,text,color,id) {
 	this.x = x;
 	this.y = y;
 	this.w = w;
 	this.h = h;
 	this.text = text;
 	this.id = id;
-	this.color = "red";
+	this.color = color;
 	
 	this.draw = function() {
 		ctx.fillStyle = this.color;

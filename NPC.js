@@ -53,20 +53,20 @@ function NPC(x, y) {
 	this.fleeing = false;
    
    this.stepLength = 50;
-	
 	//var skinTones = ["#FAE7D0", "#DFC183","#AA724B","#C8ACA3","#E8CDA8","#7B4B2A","#FFCC99","#CEAB69","#935D37",
 	//	"#C0A183","#CAA661","#573719","#FEB186","#B98865","#7B4B2A","#C18E74","#B58A3F","#483728"];
 	//this.color = skinTones[Math.floor(Math.random()*skinTones.length)];
-	this.color = POSSIBLE_COLORS[Math.floor(Math.random()*POSSIBLE_COLORS.length)];
-	POSSIBLE_COLORS.splice(POSSIBLE_COLORS.indexOf(this.color), 1);
+	//this.color = POSSIBLE_COLORS[Math.floor(Math.random()*POSSIBLE_COLORS.length)];
+	//POSSIBLE_COLORS.splice(POSSIBLE_COLORS.indexOf(this.color), 1);
+	this.color = "red";
 	this.color2 = ColorLuminance(this.color, -.3);
 	
 
 	this.wanderTimer = 0;
 
-	this.name = POSSIBLE_NAMES[Math.floor(Math.random()*POSSIBLE_NAMES.length)];
-	POSSIBLE_NAMES.splice(POSSIBLE_NAMES.indexOf(this.name), 1);
-
+	//this.name = POSSIBLE_NAMES[Math.floor(Math.random()*POSSIBLE_NAMES.length)];
+	//POSSIBLE_NAMES.splice(POSSIBLE_NAMES.indexOf(this.name), 1);
+	this.name = "Bob";
 	
 	/* DRAW */
 	
