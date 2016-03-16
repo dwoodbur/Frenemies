@@ -352,8 +352,11 @@ function NPC(x, y) {
 	this.attack = function(target){
 		// If close enough to target
 		this.target = target;
-
-		if(Math.sqrt(Math.pow(target.x - this.x , 2) + Math.pow(target.y - this.y, 2)) < this.sword.range){
+		var targetCenter = {
+				x:target.x + target.w/2,
+				y:target.y + target.h/2
+		}
+		if(Math.sqrt(Math.pow(targetCenter.x - this.x , 2) + Math.pow(targetCenter.y - this.y, 2)) < this.sword.range){
 			this.moving = false;
 			// If facing target, swing at it
 			if(this.isFacing(target)){
@@ -367,7 +370,8 @@ function NPC(x, y) {
 		}
 		// Otherwise, move to target
 		else{
-			this.moveTo(target);
+			
+			this.moveTo(targetCenter);
 		}
 		this.wanderTimer = 0;
 	};
