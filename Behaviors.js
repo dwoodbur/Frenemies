@@ -75,7 +75,7 @@ function Fight(NPC) {
 				minDist = dist;
 			}
 		}
-		if(minDist < NPC.sword.range) {
+		if(nearestEnemy != null) {
 			NPC.attack(nearestEnemy);
 			return true;
 		}
@@ -117,7 +117,7 @@ function ShouldIFight(NPC) {
 		var prob = ((NPC.bravery+1)/2) * (NPC.hp/100);
 		
 		
-		if(0.1<prob)
+		if(0.25<prob)
 			return true;
 		else return false;
 	}
@@ -269,7 +269,7 @@ function Wander(NPC) {
 			
 			var angle = Math.random() * 2 *  Math.PI;
 			var dist = 50 + Math.random() * 350;
-			NPC.wanderTimer = dist * 0.5;
+			NPC.wanderTimer = dist * 0.25;
 			var pos = {
 				x: NPC.x + Math.cos(angle) * dist,
 				y: NPC.y + Math.sin(angle) * dist
