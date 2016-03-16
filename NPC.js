@@ -58,12 +58,13 @@ function NPC(x, y) {
 	this.fleeing = false;
    
    this.stepLength = 50;
+
 	//var skinTones = ["#FAE7D0", "#DFC183","#AA724B","#C8ACA3","#E8CDA8","#7B4B2A","#FFCC99","#CEAB69","#935D37",
 	//	"#C0A183","#CAA661","#573719","#FEB186","#B98865","#7B4B2A","#C18E74","#B58A3F","#483728"];
 	//this.color = skinTones[Math.floor(Math.random()*skinTones.length)];
 	this.color;	
 	this.color2;
-	
+
 	this.wanderTimer = 0;
 
 	this.name = POSSIBLE_NAMES[Math.floor(Math.random()*POSSIBLE_NAMES.length)];
@@ -398,7 +399,7 @@ function NPC(x, y) {
 		var MoveRandomAction = new Action(new MoveRandomDir(this));
 		var SwingSwordAction = new Action(new SwingSword(this));
 		
-		var InDangerCheck = new Check(new NearEnemy(this, 50));
+		var InDangerCheck = new Check(new NearEnemy(this, 250 + this.bravery*250));
 		
 		var FightPersonalityCheck = new Check(new ShouldIFight(this));
 		var FightAction = new Action(new Fight(this));
@@ -417,7 +418,13 @@ function NPC(x, y) {
 		
 		var WanderAction = new Action(new Wander(this));
 		
-		this.root = new Selector([SurvivalSequence, BetrayalBranch, WanderAction]);
+		// Aid tree
+		var AidCheck = new Check(new ShouldAid(this));
+		var AidAction = new Action(new Aid(this));
+		
+		var AidBranch = new Sequence([AidCheck,AidAction]);
+		
+		this.root = new Selector([SurvivalSequence, AidBranch, BetrayalBranch, WanderAction]);
 
 	};
 	this.initTree();
