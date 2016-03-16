@@ -26,9 +26,9 @@ function HealthBar(wielder,x,y) {
 		if(this.wielder.hp > 70)
 			this.color = "green";
 		else if(this.wielder.hp > 50)
-			this.color = "orange";
-		else if(this.wielder.hp > 30)
 			this.color = "yellow";
+		else if(this.wielder.hp > 30)
+			this.color = "orange";
 		else this.color = "red";
 	};
 

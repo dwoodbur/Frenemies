@@ -230,7 +230,7 @@ function ShouldBetray(NPC){
 				bestTargetIndex = i;
 			}
 		}
-		if(bestTargetScore * (1+NPC.selfishness)*0.5 >= 1){
+		if(bestTargetScore * (1+NPC.selfishness)*0.5 >= 0.1){
 			NPC.target = NPCs[bestTargetIndex];
 			return true;
 		}
@@ -291,9 +291,10 @@ function Wander(NPC) {
 function ShouldAid(NPC) {
    this.execute = function(){
 		
-		// Calculate how much the NPC needs to betray someone
-		var necessity = 2*(1 - NPC.hp/100) - 1;
-		if(necessity < NPC.selfishness) {
+		// See if we're in good enough shape to aid someone else
+		var condition = NPC.hp/100;
+		if(condition < (NPC.bravery+1)*0.5) {
+			
 			return false;
 		}
 			
@@ -303,13 +304,14 @@ function ShouldAid(NPC) {
 		for(var i=0; i<NPCs.length;i++){
 			if(NPCs[i]==NPC) continue;
 			
-			var confidence = NPC.hp/NPCs[i].hp;
-			if(confidence > bestTargetScore){
-				bestTargetScore = confidence;
+			var necessity = 1-NPCs[i].hp/100;
+			if(NPCs[i].fleeing) necessity *= 2;
+			if(necessity > bestTargetScore){
+				bestTargetScore = necessity;
 				bestTargetIndex = i;
 			}
 		}
-		if(bestTargetScore * (1-(1+NPC.selfishness)*0.5) >= 1){
+		if(bestTargetScore * (1-(1+NPC.selfishness)*0.5) > 0.5){
 			NPC.target = NPCs[bestTargetIndex];
 			return true;
 		}
