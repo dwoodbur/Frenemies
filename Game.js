@@ -63,12 +63,13 @@ function Game() {
 	POSSIBLE_NAMES = ["Dylan","Connor","Ryan","Barack","Kanye","Beyonce","Magellan","Virgil","Neil Patrick Harris"];
 	POSSIBLE_COLORS = ["#FF0000","#00FF00","#0000FF","#FFFF00","#00FFFF","#FF00FF"];
 	
-	var addEnemiesAButton = new Button(canvas.width-100, 10, 90, 27, "Add 25", "add_twentyfive_enemies");
-	var addEnemiesBButton = new Button(canvas.width-100, 42, 90, 27, "Add 50", "add_fifty_enemies");
-	var addEnemiesCButton = new Button(canvas.width-100, 74, 90, 27, "Add 100", "add_hundred_enemies");
+	var clearEnemies = new Button(canvas.width-100, 10, 90, 27, "Clear", "clear_enemies");
+	var addEnemiesAButton = new Button(canvas.width-100, 42, 90, 27, "Add 25", "add_twentyfive_enemies");
+	var addEnemiesBButton = new Button(canvas.width-100, 74, 90, 27, "Add 50", "add_fifty_enemies");
+	var addEnemiesCButton = new Button(canvas.width-100, 106, 90, 27, "Add 100", "add_hundred_enemies");
 	
 	
-	buttons = [addEnemiesAButton, addEnemiesBButton, addEnemiesCButton];
+	buttons = [clearEnemies, addEnemiesAButton, addEnemiesBButton, addEnemiesCButton];
 	
 	/*----------------*/
 	/* INITIALIZATION */
@@ -391,10 +392,10 @@ function Game() {
 						}
 					}
 				}
-				if(enemies.length == 0) {
-					wave++;
-					generateEnemies();
-				}	
+				//if(enemies.length == 0) {
+				//	wave++;
+				//	generateEnemies();
+				//}	
 			}
 		}
 		for(var i=0; i<enemies.length; i++) {
@@ -614,7 +615,9 @@ function Game() {
     }
     
     function parseButton(id) {
-    	if(id == "add_twentyfive_enemies")
+    	if(id == "clear_enemies")
+    		enemies = [];
+    	else if(id == "add_twentyfive_enemies")
     		generateMoreEnemies(25);
     	else if(id == "add_fifty_enemies")
     		generateMoreEnemies(50);
