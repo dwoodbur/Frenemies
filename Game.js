@@ -61,6 +61,14 @@ function Game() {
 	
 	
 	POSSIBLE_NAMES = ["Dylan","Connor","Ryan","Barack","Kanye","Beyonce","Magellan","Virgil","Neil Patrick Harris"];
+	POSSIBLE_COLORS = ["#FF0000","#00FF00","#0000FF","#FFFF00","#00FFFF","#FF00FF"];
+	
+	var addEnemiesAButton = new Button(canvas.width-100, 10, 90, 27, "Add 25", "add_twentyfive_enemies");
+	var addEnemiesBButton = new Button(canvas.width-100, 42, 90, 27, "Add 50", "add_fifty_enemies");
+	var addEnemiesCButton = new Button(canvas.width-100, 74, 90, 27, "Add 100", "add_hundred_enemies");
+	
+	
+	buttons = [addEnemiesAButton, addEnemiesBButton, addEnemiesCButton];
 	
 	/*----------------*/
 	/* INITIALIZATION */
@@ -571,6 +579,9 @@ function Game() {
 			drawClock();
 			timeChanged--;
 		}
+		
+		for(var i in buttons)
+			buttons[i].draw();
 	}
 		
 	
@@ -596,6 +607,21 @@ function Game() {
     
     function checkClick(mousePos) {
 		// check for click response
+		for(var i in buttons) {
+			if(buttons[i].clickWithin(mousePos))
+				parseButton(buttons[i].id);
+		}
+    }
+    
+    function parseButton(id) {
+    	if(id == "add_twentyfive_enemies")
+    		generateMoreEnemies(25);
+    	else if(id == "add_fifty_enemies")
+    		generateMoreEnemies(50);
+    	else if(id == "add_hundred_enemies")
+    		generateMoreEnemies(100);
+    	
+    		
     }
         
     canvas.addEventListener('mousemove', function(evt){mouseMovement(getMousePos(canvas, evt))}, false);

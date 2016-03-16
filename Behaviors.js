@@ -102,7 +102,7 @@ function ShouldIFight(NPC) {
 	this.execute = function() {
 		if(NPC.fleeing)
 			return false;
-		if(NPC.bravery > .75)
+		if(NPC.bravery > .75 || NPC.hp > 50)
 			return true;
 		else if(NPC.bravery < -.75)
 			return false;

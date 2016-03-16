@@ -54,9 +54,11 @@ function NPC(x, y) {
    
    this.stepLength = 50;
 	
-	var skinTones = ["#FAE7D0", "#DFC183","#AA724B","#C8ACA3","#E8CDA8","#7B4B2A","#FFCC99","#CEAB69","#935D37",
-		"#C0A183","#CAA661","#573719","#FEB186","#B98865","#7B4B2A","#C18E74","#B58A3F","#483728"];
-	this.color = skinTones[Math.floor(Math.random()*skinTones.length)];
+	//var skinTones = ["#FAE7D0", "#DFC183","#AA724B","#C8ACA3","#E8CDA8","#7B4B2A","#FFCC99","#CEAB69","#935D37",
+	//	"#C0A183","#CAA661","#573719","#FEB186","#B98865","#7B4B2A","#C18E74","#B58A3F","#483728"];
+	//this.color = skinTones[Math.floor(Math.random()*skinTones.length)];
+	this.color = POSSIBLE_COLORS[Math.floor(Math.random()*POSSIBLE_COLORS.length)];
+	POSSIBLE_COLORS.splice(POSSIBLE_COLORS.indexOf(this.color), 1);
 	this.color2 = ColorLuminance(this.color, -.3);
 	
 
@@ -161,6 +163,14 @@ function NPC(x, y) {
 			
 		this.healthBar.draw();
 		
+		if(this.cameraLock) {
+			ctx.beginPath();
+			ctx.lineWidth = 3;
+			ctx.strokeStyle = "red";
+			ctx.arc(room.x+this.x+this.w/2, room.y+this.y+this.h/2, 50, 0, 2*Math.PI);
+			ctx.stroke();
+			//ctx.fill();
+		}
 	};
 	
 	// Sets personality variables to a random value between -1...1
