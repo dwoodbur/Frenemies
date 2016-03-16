@@ -393,7 +393,13 @@ function NPC(x, y) {
 		
 		var WanderAction = new Action(new Wander(this));
 		
-		this.root = new Selector([SurvivalSequence, BetrayalBranch, WanderAction]);
+		// Aid tree
+		var AidCheck = new Check(new ShouldAid(this));
+		var AidAction = new Action(new Aid(this));
+		
+		var AidBranch = new Sequence([AidCheck,AidAction]);
+		
+		this.root = new Selector([SurvivalSequence, AidBranch, BetrayalBranch, WanderAction]);
 
 	};
 	this.initTree();

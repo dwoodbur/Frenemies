@@ -114,10 +114,10 @@ function ShouldIFight(NPC) {
 			}
 		}*/
 		
-		var prob = ((NPC.bravery+1)/2)*.5 + (NPC.hp/100)*.5
+		var prob = ((NPC.bravery+1)/2) * (NPC.hp/100);
 		
 		
-		if(Math.random()<prob)
+		if(0.1<prob)
 			return true;
 		else return false;
 	}
@@ -280,6 +280,56 @@ function Wander(NPC) {
 		else{
 			NPC.wanderTimer --;
 			NPC.moveTo(NPC.target);
+		}
+		return true;
+	};
+}
+
+//Aid
+
+function ShouldAid(NPC) {
+   this.execute = function(){
+		
+		// Calculate how much the NPC needs to betray someone
+		var necessity = 2*(1 - NPC.hp/100) - 1;
+		if(necessity < NPC.selfishness) {
+			return false;
+		}
+			
+		// Calculate the necessity of aiding each NPC
+		var bestTargetScore = -1;
+		var bestTargetIndex = -1;
+		for(var i=0; i<NPCs.length;i++){
+			if(NPCs[i]==NPC) continue;
+			
+			var confidence = NPC.hp/NPCs[i].hp;
+			if(confidence > bestTargetScore){
+				bestTargetScore = confidence;
+				bestTargetIndex = i;
+			}
+		}
+		if(bestTargetScore * (1-(1+NPC.selfishness)*0.5) >= 1){
+			NPC.target = NPCs[bestTargetIndex];
+			return true;
+		}
+		return false;
+	};
+}
+function distTo(pt1, pt2) {
+			return Math.sqrt(Math.pow(pt2.y-pt1.y, 2)+Math.pow(pt2.x-pt1.x, 2));
+		}
+function Aid(NPC) {
+   this.execute = function(){
+		if(NPC.target != null) {
+			if(!(NPC.target in NPC.enemyNPCs)){
+            if(!(NPC.target in NPC.relationships)){
+               NPC.relationships[NPC.target] = 1;
+               NPC.target.say("Help! " ,140);
+               NPC.say("Don't die on me, " + NPC.target.name +"!",140);
+            }
+            if(NPC.target.hp >= 0 && distTo(NPC, NPC.target) > 120)
+               NPC.moveTo(NPC.target);
+         }
 		}
 		return true;
 	};
