@@ -139,9 +139,9 @@ function Flight(NPC) {
 				else if(enemy.x+enemy.w/2 < NPC.x+NPC.w/2)
 					leftEnemies.push(enemy);
 				else if(enemy.y > NPC.y+NPC.h/2)
-					upEnemies.push(enemy);
-				else if(enemy.y < NPC.y-NPC.h/2)
 					downEnemies.push(enemy);
+				else if(enemy.y < NPC.y-NPC.h/2)
+					upEnemies.push(enemy);
 			}
 		}
 		var above = upEnemies.length;
@@ -149,9 +149,9 @@ function Flight(NPC) {
 		var right = rightEnemies.length;
 		var left = leftEnemies.length;
 		if(above <= Math.min(below, right, left))
-			NPC.moveTo({x: NPC.x, y: Math.max(NPC.y+50, 0)});
+			NPC.moveTo({x: NPC.x, y: Math.max(NPC.y-50, 0)});
 		else if(below <= Math.min(above, right, left))
-			NPC.moveTo({x: NPC.x, y: Math.min(NPC.y-50, 0)}); 
+			NPC.moveTo({x: NPC.x, y: Math.min(NPC.y+50, 0)}); 
 		else if(right <= Math.min(above, below, left))
 			NPC.moveTo({x: Math.min(NPC.x+50, canvas.width), y: NPC.y});
 		else NPC.moveTo({x: Math.max(NPC.x-50, 0), y: NPC.y});
@@ -247,6 +247,7 @@ function Betray(NPC){
 			NPC.relationships[NPC.target] = -1;
 			NPC.say("Die, " + NPC.target.name +"!",140);
 			NPC.target.say("How could you?! " ,140);
+			//notifications.push({frame: frames, text: NPC.name + " betrayed " + NPC.target.name + "!"});
 		}
 		if(!(NPC.target in NPC.enemyNPCs)){
 			NPC.enemyNPCs.push(NPC.target);

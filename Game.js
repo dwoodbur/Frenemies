@@ -62,6 +62,8 @@ function Game() {
 	generatedBot = new NPC(0,0);
 	readyBot = null;
 	
+	notifications = [];
+	
 	
 	var clearEnemies = new Button(canvas.width-100, 10, 90, 27, "Clear", "red", "clear_enemies");
 	var addEnemiesAButton = new Button(canvas.width-100, 42, 90, 27, "Add 25", "red", "add_twentyfive_enemies");
@@ -127,6 +129,14 @@ function Game() {
 		}
 		
 		drawUI();
+		for(var i in notifications) {
+			if(frames < 50+notifications[i].frame) {
+				ctx.fillStyle = "white";
+				ctx.font = "15px Arial";
+				ctx.fillText(notifications[i].text, 10, 10);
+				break;
+			}
+		}
 	};
 	
 	

@@ -73,6 +73,7 @@ function NPC(x, y) {
 	if(POSSIBLE_NAMES.length == 0)
 		POSSIBLE_NAMES = ["Dylan","Connor","Ryan","Barack","Kanye","Beyonce","Magellan","Virgil","Neil Patrick Harris"];
 	
+	notifications = [];
 	
 	
 	/* DRAW */
@@ -178,6 +179,26 @@ function NPC(x, y) {
 			ctx.stroke();
 			//ctx.fill();
 		}
+		if(tabFlag){
+         //rcolor = 255/2*(this.bravery+1);
+         //gcolor = 255/2*(this.selfishness+1);
+         //bcolor = 255/2*(this.charisma+1);
+ 
+         //ctx.fillStyle = "rgb("+rcolor+","+bcolor+","+gcolor+")";
+         //ctx.fillRect(room.x+this.x, room.y+this.y+this.h/2, this.w, this.h/4);
+         var cx = room.x+this.x;
+         var cy = room.y+this.y;
+         
+         ctx.fillStyle = "white";
+         ctx.fillRect(cx, cy, this.w, this.h);
+         ctx.fillStyle = "red";
+         var height = (this.bravery+1)/2*this.h;
+         ctx.fillRect(cx, cy+(this.h-height), this.w/2, height);
+         ctx.fillStyle = "blue";
+         height = (this.selfishness+1)/2*this.h;
+         ctx.fillRect(cx+this.w/2, cy+(this.h-height), this.w/2, height);
+      }
+		
 	};
 	
 	// Sets personality variables to a random value between -1...1
