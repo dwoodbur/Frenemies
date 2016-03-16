@@ -61,9 +61,7 @@ function NPC(x, y) {
 	//var skinTones = ["#FAE7D0", "#DFC183","#AA724B","#C8ACA3","#E8CDA8","#7B4B2A","#FFCC99","#CEAB69","#935D37",
 	//	"#C0A183","#CAA661","#573719","#FEB186","#B98865","#7B4B2A","#C18E74","#B58A3F","#483728"];
 	//this.color = skinTones[Math.floor(Math.random()*skinTones.length)];
-	this.color = POSSIBLE_COLORS[Math.floor(Math.random()*POSSIBLE_COLORS.length)];
-	POSSIBLE_COLORS.splice(POSSIBLE_COLORS.indexOf(this.color), 1);
-	
+	this.color;
 	if(POSSIBLE_COLORS.length == 0)
 		POSSIBLE_COLORS = ["#FF0000","#00FF00","#0000FF","#FFFF00","#00FFFF","#FF00FF","#000000","#F0F0F0F"];		
 	
@@ -189,7 +187,9 @@ function NPC(x, y) {
 		this.selfishness = 2*Math.random() - 1;
 		this.charisma = 2*Math.random() - 1;
 		this.bravery = 2*Math.random() - 1;
-		
+		this.color = POSSIBLE_COLORS[Math.floor(Math.random()*POSSIBLE_COLORS.length)];
+		POSSIBLE_COLORS.splice(POSSIBLE_COLORS.indexOf(this.color), 1);
+	
 		//this.color = "rgb("+this.selfishness+","+this.charisma+","+this.bravery+")";
 	};
 	this.initPersonality();
