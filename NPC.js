@@ -4,6 +4,11 @@
  * 
  *  
  */
+
+
+	POSSIBLE_NAMES = ["Dylan","Connor","Ryan","Barack","Kanye","Beyonce","Magellan","Virgil","Neil Patrick Harris"];
+	POSSIBLE_COLORS = ["#FF0000","#00FF00","#0000FF","#FFFF00","#00FFFF","#FF00FF","#000000","#F0F0F0F"];
+
 function NPC(x, y) {
 	
 	this.x = x;
@@ -56,17 +61,23 @@ function NPC(x, y) {
 	//var skinTones = ["#FAE7D0", "#DFC183","#AA724B","#C8ACA3","#E8CDA8","#7B4B2A","#FFCC99","#CEAB69","#935D37",
 	//	"#C0A183","#CAA661","#573719","#FEB186","#B98865","#7B4B2A","#C18E74","#B58A3F","#483728"];
 	//this.color = skinTones[Math.floor(Math.random()*skinTones.length)];
-	//this.color = POSSIBLE_COLORS[Math.floor(Math.random()*POSSIBLE_COLORS.length)];
-	//POSSIBLE_COLORS.splice(POSSIBLE_COLORS.indexOf(this.color), 1);
-	this.color = "red";
-	this.color2 = ColorLuminance(this.color, -.3);
+	this.color = POSSIBLE_COLORS[Math.floor(Math.random()*POSSIBLE_COLORS.length)];
+	POSSIBLE_COLORS.splice(POSSIBLE_COLORS.indexOf(this.color), 1);
 	
+	if(POSSIBLE_COLORS.length == 0)
+		POSSIBLE_COLORS = ["#FF0000","#00FF00","#0000FF","#FFFF00","#00FFFF","#FF00FF","#000000","#F0F0F0F"];		
+	
+	this.color2 = ColorLuminance(this.color, -.3);
 
 	this.wanderTimer = 0;
 
-	//this.name = POSSIBLE_NAMES[Math.floor(Math.random()*POSSIBLE_NAMES.length)];
-	//POSSIBLE_NAMES.splice(POSSIBLE_NAMES.indexOf(this.name), 1);
-	this.name = "Bob";
+	this.name = POSSIBLE_NAMES[Math.floor(Math.random()*POSSIBLE_NAMES.length)];
+	POSSIBLE_NAMES.splice(POSSIBLE_NAMES.indexOf(this.name), 1);
+	
+	if(POSSIBLE_NAMES.length == 0)
+		POSSIBLE_NAMES = ["Dylan","Connor","Ryan","Barack","Kanye","Beyonce","Magellan","Virgil","Neil Patrick Harris"];
+	
+	
 	
 	/* DRAW */
 	

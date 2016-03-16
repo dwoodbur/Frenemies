@@ -62,8 +62,6 @@ function Game() {
 	generatedBot = new NPC(0,0);
 	readyBot = null;
 	
-	POSSIBLE_NAMES = ["Dylan","Connor","Ryan","Barack","Kanye","Beyonce","Magellan","Virgil","Neil Patrick Harris"];
-	POSSIBLE_COLORS = ["#FF0000","#00FF00","#0000FF","#FFFF00","#00FFFF","#FF00FF","#000000","#F0F0F0F"];
 	
 	var clearEnemies = new Button(canvas.width-100, 10, 90, 27, "Clear", "red", "clear_enemies");
 	var addEnemiesAButton = new Button(canvas.width-100, 42, 90, 27, "Add 25", "red", "add_twentyfive_enemies");
