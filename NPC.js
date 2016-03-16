@@ -63,7 +63,7 @@ function NPC(x, y) {
 	//this.color = skinTones[Math.floor(Math.random()*skinTones.length)];
 	this.color;
 	if(POSSIBLE_COLORS.length == 0)
-		POSSIBLE_COLORS = ["#FF0000","#00FF00","#0000FF","#FFFF00","#00FFFF","#FF00FF","#000000","#F0F0F0"];		
+		POSSIBLE_COLORS = ["#FF0000","#00FF00","#0000FF","#FFFF00","#00FFFF","#FF00FF"];		
 	
 	this.color2 = ColorLuminance(this.color, -.3);
 
