@@ -68,7 +68,8 @@ function NPC(x, y) {
 	this.wanderTimer = 0;
 
    this.race = "human";
-	this.name = generateName(this.race);
+   this.gender = Math.random() > 0.5 ? "male" : "female";
+	this.name = generateName(this.race,this.gender);
 	
 	if(POSSIBLE_NAMES.length == 0)
 		POSSIBLE_NAMES = ["Dylan","Connor","Ryan","Barack","Kanye","Beyonce","Magellan","Virgil","Neil Patrick Harris"];

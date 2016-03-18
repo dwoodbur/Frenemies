@@ -5,10 +5,11 @@ parseDataSet = function(){
 	
 };
 
-function generateName(race){
+function generateName(race,gender){
    var name = "";
    if(race == "human"){
-      name = choose(HumanMaleFirstNames) + " "+choose(HumanSurnames);
+      var firstName = gender=="male"?choose(HumanMaleFirstNames) :choose(HumanFemaleFirstNames);
+      name = firstName+ " "+choose(HumanSurnames);
    }
       
    return name;
