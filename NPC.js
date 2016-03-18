@@ -424,7 +424,7 @@ function NPC(x, y) {
 		var MoveRandomAction = new Action(new MoveRandomDir(this));
 		var SwingSwordAction = new Action(new SwingSword(this));
 		
-		var InDangerCheck = new Check(new NearEnemy(this, 250 + this.bravery*250));
+		var InDangerCheck = new Check(new NearEnemy(this, 300 + this.bravery*250));
 		
 		var FightPersonalityCheck = new Check(new ShouldIFight(this));
 		var FightAction = new Action(new Fight(this));

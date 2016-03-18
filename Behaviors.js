@@ -270,7 +270,7 @@ function Wander(NPC) {
 			
 			var angle = Math.random() * 2 *  Math.PI;
 			var dist = 50 + Math.random() * 350;
-			NPC.wanderTimer = dist * 0.25;
+			NPC.wanderTimer = dist * 0.45;
 			var pos = {
 				x: NPC.x + Math.cos(angle) * dist,
 				y: NPC.y + Math.sin(angle) * dist
